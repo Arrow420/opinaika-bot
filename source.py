@@ -59,7 +59,6 @@ def main_window():
 
 
         chrome_options = Options()
-        chrome_options.add_experimental_option("detach", True)
 
         swe_sanasto = "http://www.opinaika.fi/opinaika/so.cfm?s=aihioselaus&va=62416"
         eng_sanasto = "https://www.opinaika.fi/opinaika/so.cfm?s=aihioselaus&va=59994"
@@ -70,7 +69,8 @@ def main_window():
         ita_sanasto = "https://www.opinaika.fi/opinaika/so.cfm?s=aihioselaus&va=108152"
 
 
-        driver = webdriver.Chrome()
+        chrome_path = "img\\chromedriver.exe"
+        driver = webdriver.Chrome(chrome_path, options=chrome_options)
 
         user_sanasto = lang_variable.get()
         print (user_sanasto)
@@ -351,21 +351,21 @@ def main_window():
                 time.sleep(1)
         
                 for i in pysty_alku:
-                    (i).click()
+                    driver.execute_script("arguments[0].click();", i)
                     time.sleep(0.2)
 
                     for i in pysty_loppu:
-                        (i).click()
+                        driver.execute_script("arguments[0].click();", i)
                         time.sleep(0.2)
         
                 time.sleep(0.5)
 
                 for i in vaaka_alku:
-                    (i).click()
+                    driver.execute_script("arguments[0].click();", i)
                     time.sleep(0.2)
                         
                     for i in vaaka_loppu:
-                        (i).click()
+                        driver.execute_script("arguments[0].click();", i)
                         time.sleep(0.2)
         
             time.sleep(1)
@@ -395,8 +395,9 @@ def main_window():
 
             for i in range(len(monit)):
                 moni_oikea_vastaus = (monit[i]).get_attribute('data-lopputeksti')
+                time.sleep(0.1)
                 (monit[i]).click()
-                time.sleep(0.2)
+                time.sleep(0.1)
                 driver.find_element_by_xpath('//div[text()="%s"]' % moni_oikea_vastaus).click()
                 print(moni_oikea_vastaus)
                 write(moni_oikea_vastaus)
@@ -455,8 +456,6 @@ def main_window():
 
 
         # SANASTO MENU
-
-        all_elems = driver.find_elements_by_class_name("selausvalikko.vaihdaosoite")
 
         all_the_elems =  ('//*[@id="divValikkoItemit"]/div[1]'
         , '//*[@id="divValikkoItemit"]/div[2]', '//*[@id="divValikkoItemit"]/div[3]'
@@ -601,10 +600,14 @@ def main_window():
                         yhdistely()
 
 
-
         omg()
+        
+        print("Automation finished!")
+        write("Automation finished!")
+        time.sleep(5)
+        driver.quit()
 
-        time.sleep(20)
+        
 
 
     # MUSIC
@@ -676,20 +679,14 @@ def main_window():
         check.config(state='disabled')
         terminal.config(state='disabled')
 
-    def unlock():
-        username.config(state='normal')
-        password.config(state='normal')
-        dropdown_menu.config(state='normal')
-        login.config(state='normal')
-        check.config(state='normal')
-        terminal.config(state='disabled')
 
     def lock_and_run_chrome():
         terminal.config(state='normal')
         terminal.delete('1.0', END)
         lock()
-        threading.Thread(target=chrome_script)
-        threading.Thread(target=chrome_script).start()
+        chrome_thread = threading.Thread(target=chrome_script)
+        chrome_thread.start()
+
 
     # LOGIN BUTTON
 
