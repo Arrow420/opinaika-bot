@@ -47,7 +47,7 @@ def main_window():
 
     splash_root.destroy()
     root = tk.Tk()
-    root.title("Opinaika automation bot v. 1.1.1")
+    root.title("Opinaika bot v. 1.1.1")
     root.geometry('715x515+300+50')
     root.iconbitmap('img\\lain_favicon.ico')
     root.resizable(False, False)
@@ -613,9 +613,7 @@ def main_window():
     # MUSIC
     
     mixer.init()
-    mixer.music.load("img\\intro.mp3")
-    mixer.music.play(loops=0)
-    mixer.music.load("img\\loop.wav")
+    mixer.music.load("img\\chiptunes_mix.mp3")
     mixer.music.play(loops=-1)
 
 
