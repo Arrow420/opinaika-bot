@@ -602,25 +602,19 @@ def main_window():
 
         omg()
         
-        print("Automation finished!")
+        print("Automation finished")
         write("Automation finished!")
         time.sleep(5)
         driver.quit()
 
-        
-
-
-    # MUSIC
-    
-    mixer.init()
-    mixer.music.load("img\\chiptunes_mix.mp3")
-    mixer.music.play(loops=-1)
 
 
     # COLOR HEX
 
     navy = '#343647'
-    gray = '#CCCCCC'
+    gray = '#CCCCCC'   
+
+
 
     # BACKGROUND IMAGE
     
@@ -640,6 +634,37 @@ def main_window():
 
     password = Entry(root, bg=navy, fg="white", textvariable=password_text, show="*", width=25)
     password.place(x=380, y=80, relwidth=0.33, relheight=0.047)
+
+    # NOW PLAYING TEXT
+
+    now_playing = Label(root, bg=gray, text=" ")
+    now_playing.place(x=150, y=0)
+
+    
+    # MUSIC
+    
+    def menu_music():
+        
+        mixer.init()
+        lists_of_songs = os.listdir("img/music")
+
+        for song in lists_of_songs:
+            if song.endswith(".mp3"):
+                file_path = "img/music/" + song
+                mixer.music.load(str(file_path))
+                mixer.music.play()
+                print("Playing::::: " + song[:-4])
+                now_playing.config(text="Now playing ::: " + " " + str(song[:-4]))
+                
+                while mixer.music.get_busy() == True:
+                    continue
+
+    music_thread = threading.Thread(target=menu_music)
+    music_thread.start()
+    
+
+
+
 
     # TERMINAL THING
 
