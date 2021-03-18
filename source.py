@@ -639,9 +639,15 @@ def main_window():
                 elif exercise == "Yhdistely":
                     yhdistely()
                 else:
-                    print("Unable to indentify exercise! \nSkipping...")
-                    write("Unable to indentify exercise! \nSkipping...")
-                    continue
+                    print("Unknown exercise name! \nIdentifying exercise...")
+                    write("Unknown exercise name! \nIdentifying exercise...")
+
+                    aihiokoodi = driver.find_element_by_class_name("aihiokoodilaatikko")
+                    aihiokoodi.click()
+                    exercise = driver.find_element_by_xpath('//*[@id="divAihioPopup"]/div/table[2]/tbody/tr[2]/td[2]').text.strip("Harjoitus()").strip()
+                    
+                    if exercise == str(exercise):
+                        globals()[exercise]()
 
 
         # EXERCISES FUNCTION WITH "SKIP COMPLETED" ENABLED
@@ -691,9 +697,15 @@ def main_window():
                     elif exercise == "Yhdistely":
                         yhdistely()
                     else:
-                        print("Unable to indentify exercise! \nSkipping...")
-                        write("Unable to indentify exercise! \nSkipping...")
-                        continue
+                        print("Unknown exercise name! \nIdentifying exercise...")
+                        write("Unknown exercise name! \nIdentifying exercise...")
+
+                        aihiokoodi = driver.find_element_by_class_name("aihiokoodilaatikko")
+                        aihiokoodi.click()
+                        exercise = driver.find_element_by_xpath('//*[@id="divAihioPopup"]/div/table[2]/tbody/tr[2]/td[2]').text.strip("Harjoitus()").strip()
+                        
+                        if exercise == str(exercise):
+                            globals()[exercise]()
 
 
         omg()
