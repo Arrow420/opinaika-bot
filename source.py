@@ -1,9 +1,11 @@
 from mttkinter import mtTkinter as tk
-from tkinter import Entry, Button, PhotoImage, Label, Canvas, mainloop, ttk, INSERT, messagebox, StringVar, OptionMenu, Checkbutton, IntVar, Text, END, Checkbutton
+from tkinter import Entry, Button, PhotoImage, Label, Canvas, mainloop, ttk, INSERT, messagebox, StringVar, OptionMenu, Checkbutton, IntVar, Text, END, Checkbutton, Toplevel
+from idlelib.tooltip import Hovertip
 from pygame import mixer
 import os
 import time
 import threading
+import ctypes
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -13,9 +15,9 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.keys import Keys
 
-
 # SPLASH SCREEN
 
+ctypes.windll.shcore.SetProcessDpiAwareness(1)
 splash_root = tk.Tk()
 splash_root.title("SPLASH SCREEN")
 splash_root.geometry('370x320+430+160')
@@ -47,8 +49,8 @@ def main_window():
 
     splash_root.destroy()
     root = tk.Tk()
-    root.title("Opinaika bot v. 1.1.1")
-    root.geometry('715x515+300+50')
+    root.title("Opinaika bot v. 2.2.2")
+    root.geometry('1072x772+450+75')
     root.iconbitmap('img\\lain_favicon.ico')
     root.resizable(False, False)
     root.focus_force()
@@ -126,9 +128,6 @@ def main_window():
                         
                     if int(pisteet) >= int(piste_threshold): 
                         time.sleep(0.5)
-                        driver.execute_script("window.scrollTo(0, 1080);")
-                        time.sleep(0.5)
-                        driver.find_element_by_class_name('divlopetaaihio.lopetaaihio').click()
                         global piste_threshold_reached
                         piste_threshold_reached = True
                         return
@@ -198,7 +197,9 @@ def main_window():
                 else:
                     if human_state == 1:
                         human_behaviour()
-                    
+                        if piste_threshold_reached == True:
+                            break
+
                     sanelu_oikea_vastaus = (sanat[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"}', 1)[0]
                     print(sanelu_oikea_vastaus)
                     write(sanelu_oikea_vastaus)
@@ -235,8 +236,10 @@ def main_window():
                 else:
                     if human_state == 1:
                         human_behaviour()
+                        if piste_threshold_reached == True:
+                            break
 
-                    aukkolause_oikea_vastaus = (lauseet[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"}]}', 1)[0]
+                    aukkolause_oikea_vastaus = (lauseet[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"}', 1)[0]
                     print(aukkolause_oikea_vastaus)
                     write(aukkolause_oikea_vastaus)
                     (lauseet[i]).send_keys(aukkolause_oikea_vastaus)
@@ -271,6 +274,8 @@ def main_window():
                 else:
                     if human_state == 1:
                         human_behaviour()
+                        if piste_threshold_reached == True:
+                            break
                 
                     aukkosana_oikea_vastaus = (aukot[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"}]}', 1)[0]
                     print(aukkosana_oikea_vastaus)
@@ -308,6 +313,8 @@ def main_window():
                 else:
                     if human_state == 1:                    
                         human_behaviour()
+                        if piste_threshold_reached == True:
+                            break
                 
                     (kuvat[i]).click()
                     time.sleep(5)
@@ -350,7 +357,9 @@ def main_window():
                     break
                 else:
                     if human_state == 1:                    
-                        human_behaviour() 
+                        human_behaviour()
+                        if piste_threshold_reached == True:
+                            break 
                 
                     ristikko_oikea_vastaus = (ristit[i]).get_attribute("data-oikeamerkki")
                     (ristit[i]).send_keys(ristikko_oikea_vastaus)
@@ -434,7 +443,9 @@ def main_window():
                         break
                     else:
                         if human_state == 1:                    
-                            human_behaviour()                 
+                            human_behaviour()
+                            if piste_threshold_reached == True:
+                                break                 
               
                         driver.execute_script("arguments[0].click();", i)
                         time.sleep(0.2)
@@ -475,7 +486,9 @@ def main_window():
                     break
                 else:
                     if human_state == 1:                    
-                        human_behaviour()                
+                        human_behaviour()
+                        if piste_threshold_reached == True:
+                            break                
                 
                     moni_oikea_vastaus = (monit[i]).get_attribute('data-lopputeksti')
                     time.sleep(0.1)
@@ -515,7 +528,9 @@ def main_window():
                     break
                 else:
                     if human_state == 1:                    
-                        human_behaviour()                 
+                        human_behaviour()
+                        if piste_threshold_reached == True:
+                            break                 
                 
                     yhdistely_oikea_vastaus = (yhdit[i]).get_attribute('data-oikeaarvo')
                     (yhdit[i]).click()
@@ -725,39 +740,109 @@ def main_window():
 
     # BACKGROUND IMAGE
     
-    background = PhotoImage(file="img\\bot_bg_2.png")
+    background = PhotoImage(file="img\\bg_4.png")
     bg_label = Label(root, image=background)
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
     bg_label.image = background
 
+    # STASTUS BAR
+
+    status_bar = Canvas(root, bg=gray, width=1072, height=41, borderwidth=0)
+    status_bar.place(x=0, y=0)
+
     # BUTTONS
 
+    # SETTINGS WINDOW
+    
+    def settings_window():
+        if settings_root.state() != "normal": 
+            settings_root.deiconify()
+        else:
+            settings_root.withdraw()
+    
+
+    settings_root = Toplevel()
+    settings_root.title("Settings")
+    settings_root.iconbitmap('img\\settings.ico')
+    settings_root.geometry('585x645+780+160')
+    settings_root.resizable(False, False)
+
+    # SETTINGS BACKGROUND IMAGE
+    
+    settings_background = PhotoImage(file="img\\settings_bg_4.png")
+    settings_bg_label = Label(settings_root, image=settings_background)
+    settings_bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+    settings_bg_label.image = settings_background    
+
+    
+    # ACTUAL SETTINGS #
+
     # SKIP CHECKBOX
+    
     skip_var = IntVar(value=1)
-    skip_check = Checkbutton(root, bg=gray, height=1, text="Skip completed exercises", variable=skip_var)
-    skip_check.place(x=12, y=55)
+    skip_check = Checkbutton(settings_root, bg=gray, height=1, text="Skip completed exercises", variable=skip_var)
+    skip_check.place(x=10, y=15)
+    Hovertip(skip_check, "Skip the exercise if the score is 75 or higher")    
     
     # HUMANLIKE BEHAVIOUR CHECKBOX
+    
     human_var = IntVar(value=0)
-    human_check = Checkbutton(root, bg=gray, height=1, text="Humanlike behaviour", variable=human_var)
-    human_check.place(x=12, y=80)
+    human_check = Checkbutton(settings_root, bg=gray, height=1, text="Humanlike behaviour", variable=human_var)
+    human_check.place(x=10, y=62)
+    Hovertip(human_check, "Exit the exercise when 90p reached") 
+
+    # CUSTOM URL GIVEN BY USER
+  
+    url_var = IntVar(value=0)
+    url_check = Checkbutton(settings_root, bg=gray, height=1, text="Custom URL", variable=url_var)
+    url_check.place(x=10, y=60)
+    url_check.place_forget()
+    Hovertip(url_check, "Use custom opinaika URL given by user")
+
+
+    # SAVE SETTINGS BUTTON
+    
+    def save_settings():
+        settings_root.withdraw()
+        write("Settings saved")
+    
+    save = Button(settings_root, bg=gray, width=6, height=1, text="save", command=save_settings)
+    save.place(x=10, y=590)
+
+
+    settings_root.withdraw()
+
+    def on_closing():
+        settings_root.withdraw()
+
+    settings_root.protocol("WM_DELETE_WINDOW", on_closing)
+    
+    
+
+    # SETTINGS BUTTON
+
+    settings_img = PhotoImage(file="img\\set.png")
+    settings_button = Button(root, image=settings_img, command=settings_window, borderwidth=0, bg=gray)
+    settings_button.image = settings_img
+    settings_button.place(x=1030, y=2)
+    
 
     # ENTRIES
     
     username_text = StringVar(root)
     password_text = StringVar(root)
     
-    username = Entry(root, bg=navy, fg="white", textvariable=username_text, width=25)
-    username.place(x=380, y=46, relwidth=0.33, relheight=0.047)
+    username = Entry(root, bg=navy, fg="white", textvariable=username_text, width=23)
+    username.place(x=35, y=85, relwidth=0.36, relheight=0.045)
 
-    password = Entry(root, bg=navy, fg="white", textvariable=password_text, show="*", width=25)
-    password.place(x=380, y=80, relwidth=0.33, relheight=0.047)
+    password = Entry(root, bg=navy, fg="white", textvariable=password_text, show="*", width=23)
+    password.place(x=35, y=130, relwidth=0.36, relheight=0.045)
     
 
     # NOW PLAYING TEXT
 
     now_playing = Label(root, bg=gray, text=" ")
-    now_playing.place(x=150, y=0)
+    now_playing.place(x=150, y=2)
 
     
     # MUSIC
@@ -780,6 +865,7 @@ def main_window():
                     continue
 
     music_thread = threading.Thread(target=menu_music)
+    music_thread.daemon = True
     music_thread.start()
     
 
@@ -788,9 +874,10 @@ def main_window():
 
     # TERMINAL THING
 
-    terminal = Text(root, bg=navy, fg="white", height=9, width=42)
-    terminal.place(x=374, y=367)
-    terminal.insert(END, "I dream of life, it might come true")
+    terminal = Text(root, bg=navy, fg="white", height=9, width=38)
+    terminal.place(x=0, y=575)
+    terminal.insert(END, "Dirty my life, I clean for you\nI dream of life, it might come true\nI need a break, can I live?\nI need to change something quick\nI pay the price for the sin\nI'm at the gate, let me in\nI take my life for the risk\nI roll a dice, need a six\n")
+    
     terminal.config(state='disabled')
     
     # TEXT INTO TERMINAL
@@ -818,17 +905,28 @@ def main_window():
 
 
     def lock_and_run_chrome():
-        terminal.config(state='normal')
-        terminal.delete('1.0', END)
-        lock()
-        chrome_thread = threading.Thread(target=chrome_script)
-        chrome_thread.start()
+        
+        if str(username.get()) == "":
+            print("Invalid email/pass")
+            write("Invalid email/pass")
+        
+        elif str(password.get()) == "":
+            print("Invalid email/pass")
+            write("Invalid email/pass")
+        
+        else:
+            terminal.config(state='normal')
+            terminal.delete('1.0', END)
+            lock()
+            chrome_thread = threading.Thread(target=chrome_script)
+            chrome_thread.daemon = True
+            chrome_thread.start()
 
 
     # LOGIN BUTTON
 
-    login = Button(root, bg=gray, width=6, height=1, text="login", command=lock_and_run_chrome)
-    login.place(x=465, y=130)
+    login = Button(root, bg=gray, width=7, height=1, text="login", command=lock_and_run_chrome)
+    login.place(x=175, y=180)
     
     # DROPDOWN MENU FOR ENGLISH/SWEDISH MODE
     
@@ -845,15 +943,14 @@ def main_window():
     lang_variable.set(OPTIONS[0])
 
     dropdown_menu = OptionMenu(root, lang_variable, *OPTIONS)
-    dropdown_menu.place(x=12, y=12)
+    dropdown_menu.place(x=0, y=0)
     dropdown_menu.config(bg=gray)
     dropdown_menu["menu"].config(bg=gray)
 
 
     # INFO POPUP
 
-    lines = ['Opinaika bot', ' ', 'Please, read the instructions in readme.nfo ', ' ', ' ', ' ', ' ',
-     ' ', ' ', 'Made by Arrow', ' ', '©2021 Eternal Bliss All rights reserved',  '']
+    lines = ['Please read the instructions in readme.nfo', ' ', ' ', ' ', ' ', ' ', ' ', 'Made by Arrow', ' ', '©2021 Eternal Bliss All rights reserved']
     messagebox.showinfo(' A Dream of Life', "\n".join(lines))
 
 
