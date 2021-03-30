@@ -1,5 +1,5 @@
 from mttkinter import mtTkinter as tk
-from tkinter import Entry, Button, PhotoImage, Label, Canvas, mainloop, ttk, INSERT, messagebox, StringVar, OptionMenu, Checkbutton, IntVar, Text, END, Checkbutton, Toplevel
+from tkinter import Entry, Button, PhotoImage, Label, Canvas, mainloop, ttk, INSERT, messagebox, StringVar, OptionMenu, Checkbutton, IntVar, Text, END, Toplevel, Scale
 from idlelib.tooltip import Hovertip
 from pygame import mixer
 import os
@@ -20,24 +20,22 @@ from selenium.webdriver.common.keys import Keys
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
 splash_root = tk.Tk()
 splash_root.title("SPLASH SCREEN")
-splash_root.geometry('370x320+430+160')
-splash_canvas = Canvas(splash_root, bg="blue", height=280, width=350)
+splash_root.geometry('555x480+680+255')
 splash_root.resizable(False, False)
 splash_root.overrideredirect(1)
 
 
 # SPLASH IMAGE
-splash_logo = PhotoImage(file="img\\5.png")
+splash_logo = PhotoImage(file="img\\splash.png")
 splash_label = Label(splash_root, image=splash_logo)
 splash_label.place(x=0, y=0, relwidth=1, relheight=1)
 
 
 # PROGRESS BAR STYLE
 
-s = ttk.Style()
-s.theme_use('clam')
-s.configure("red.Horizontal.TProgressbar", foreground='red', background='black')
-
+style = ttk.Style()
+style.theme_use('clam')
+style.configure("red.Horizontal.TProgressbar", foreground='red', background='black')
 bar = ttk.Progressbar(splash_root, style="red.Horizontal.TProgressbar", orient="horizontal",
                       length=200, mode="determinate", value=0)
 
@@ -71,7 +69,10 @@ def main_window():
         chrome_path = "img\\chromedriver.exe"
         driver = webdriver.Chrome(chrome_path, options=Options())
 
-        user_sanasto = lang_variable.get()        
+        if url_check == 0:
+            user_sanasto = lang_variable.get()
+        else:
+            user_sanasto = url_entry_var.get()
 
         if user_sanasto == "Swedish": 
             driver.get(swe_sanasto)
@@ -94,7 +95,10 @@ def main_window():
         elif user_sanasto == "Italian":
             driver.get(ita_sanasto)
         
-        print (user_sanasto)
+        else:
+            driver.get(url_entry_var.get())
+        
+        print(user_sanasto)
         write(user_sanasto)
 
         human_state = human_var.get() 
@@ -116,7 +120,7 @@ def main_window():
         def human_behaviour():
             
             if human_state == 1:
-                piste_threshold = 90
+                piste_threshold = human_scale.get()
                 tehtyja_kohtia = driver.find_element_by_xpath('//*[@id="divKohtiaTehty"]').text
             
                 if len(tehtyja_kohtia) < 10:
@@ -685,7 +689,9 @@ def main_window():
                     print(exercise_score)
                     write(exercise_score)
 
-                if int(exercise_score) > 70:
+                skip_threshold = skip_scale.get()
+
+                if int(exercise_score) > skip_threshold:
                     
                     print(exercise + " " + "already completed")
                     write(exercise + " " + "already completed")
@@ -747,7 +753,7 @@ def main_window():
 
     # STASTUS BAR
 
-    status_bar = Canvas(root, bg=gray, width=1072, height=41, borderwidth=0)
+    status_bar = Canvas(root, bg=gray, width=1072, height=31, borderwidth=0)
     status_bar.place(x=0, y=0)
 
     # BUTTONS
@@ -764,7 +770,7 @@ def main_window():
     settings_root = Toplevel()
     settings_root.title("Settings")
     settings_root.iconbitmap('img\\settings.ico')
-    settings_root.geometry('585x645+780+160')
+    settings_root.geometry('585x645+1150+260')
     settings_root.resizable(False, False)
 
     # SETTINGS BACKGROUND IMAGE
@@ -777,26 +783,107 @@ def main_window():
     
     # ACTUAL SETTINGS #
 
+    # NUMBER SCALES #
+
+    # SKIP SCALE
+
+    skip_scale_var = IntVar()
+    skip_scale = Scale(settings_root, bg=gray, resolution=5, variable=skip_scale_var, from_ = 0, to = 100, orient = "horizontal", width=20, sliderlength=40, length=450, label="Change the minimium score for skipping an exercise")  
+    skip_scale.set(70)
+    skip_scale.place(x=70, y=220)
+    skip_scale.lower()
+
+    close_skip = Button(settings_root, bg=gray, height=1, width=5, text="ok")
+    
+    def hide_skip_scale():
+        skip_scale.lower()
+        close_skip.lower()
+    
+    close_skip['command'] = hide_skip_scale
+    close_skip.place(x=255, y=320)
+    close_skip.lower()
+
+    # HUMAN SCALE 
+    
+    human_scale_var = IntVar()
+    human_scale = Scale(settings_root, bg=gray, resolution=5, variable=human_scale_var, from_ = 0, to = 100, orient = "horizontal", width=20, sliderlength=40, length=450, label="Change the minimium score to finish an exercise")  
+    human_scale.set(90)
+    human_scale.place(x=70, y=220)
+    human_scale.lower()
+
+    close_human = Button(settings_root, bg=gray, height=1, width=5, text="ok")
+    
+    def hide_human_scale():
+        human_scale.lower()
+        close_human.lower()
+    
+    close_human['command'] = hide_human_scale
+    close_human.place(x=255, y=320)
+    close_human.lower()
+
+    # CUSTOM URL ENTRY
+
+    url_entry_var = StringVar(value="")
+    url_entry = Entry(settings_root, bg=navy, fg="white", width=45, textvariable=url_entry_var)
+    url_entry.place(x=71, y=274)
+    url_entry.lower()
+    
+    close_url = Button(settings_root, bg=gray, height=1, width=5, text="ok")
+    
+    def hide_url_entry():
+        url_entry.lower()
+        close_url.lower()
+    
+    close_url['command'] = hide_url_entry
+    close_url.place(x=255, y=320)
+    close_url.lower()
+
     # SKIP CHECKBOX
     
     skip_var = IntVar(value=1)
-    skip_check = Checkbutton(settings_root, bg=gray, height=1, text="Skip completed exercises", variable=skip_var)
+    
+    def show_skip_scale():
+        if skip_var.get() == 1:
+            skip_scale.lift()
+            close_skip.lift()
+        else:
+            skip_scale.lower()
+            close_skip.lower()
+    
+    skip_check = Checkbutton(settings_root, bg=gray, height=1, text="Skip completed exercises", variable=skip_var, command=show_skip_scale)
     skip_check.place(x=10, y=15)
     Hovertip(skip_check, "Skip the exercise if the score is 75 or higher")    
     
     # HUMANLIKE BEHAVIOUR CHECKBOX
     
     human_var = IntVar(value=0)
-    human_check = Checkbutton(settings_root, bg=gray, height=1, text="Humanlike behaviour", variable=human_var)
-    human_check.place(x=10, y=62)
+    
+    def show_human_scale():
+        if human_var.get() == 1:
+            human_scale.lift()
+            close_human.lift()
+        else:
+            human_scale.lower()
+            close_human.lower()
+    
+    human_check = Checkbutton(settings_root, bg=gray, height=1, text="Humanlike behaviour", variable=human_var, command=show_human_scale)
+    human_check.place(x=10, y=60)
     Hovertip(human_check, "Exit the exercise when 90p reached") 
 
     # CUSTOM URL GIVEN BY USER
   
     url_var = IntVar(value=0)
-    url_check = Checkbutton(settings_root, bg=gray, height=1, text="Custom URL", variable=url_var)
-    url_check.place(x=10, y=60)
-    url_check.place_forget()
+    
+    def show_url_entry():
+        if url_var.get() == 1:
+            url_entry.lift()
+            close_url.lift()
+        else:
+            url_entry.lower()
+            close_url.lower()
+    
+    url_check = Checkbutton(settings_root, bg=gray, height=1, text="Custom URL", variable=url_var, command=show_url_entry)
+    url_check.place(x=10, y=105)
     Hovertip(url_check, "Use custom opinaika URL given by user")
 
 
@@ -833,15 +920,15 @@ def main_window():
     password_text = StringVar(root)
     
     username = Entry(root, bg=navy, fg="white", textvariable=username_text, width=23)
-    username.place(x=35, y=85, relwidth=0.36, relheight=0.045)
+    username.place(x=30, y=95, relwidth=0.36, relheight=0.045)
 
     password = Entry(root, bg=navy, fg="white", textvariable=password_text, show="*", width=23)
-    password.place(x=35, y=130, relwidth=0.36, relheight=0.045)
+    password.place(x=30, y=140, relwidth=0.36, relheight=0.045)
     
 
     # NOW PLAYING TEXT
 
-    now_playing = Label(root, bg=gray, text=" ")
+    now_playing = Label(status_bar, bg=gray, text=" ", width=75)
     now_playing.place(x=150, y=2)
 
     
@@ -902,6 +989,7 @@ def main_window():
         skip_check.config(state='disabled')
         terminal.config(state='disabled')
         human_check.config(state='disabled')
+        url_check.config(state='disabled')
 
 
     def lock_and_run_chrome():
@@ -925,8 +1013,8 @@ def main_window():
 
     # LOGIN BUTTON
 
-    login = Button(root, bg=gray, width=7, height=1, text="login", command=lock_and_run_chrome)
-    login.place(x=175, y=180)
+    login = Button(root, bg=gray, width=6, text="login", command=lock_and_run_chrome)
+    login.place(x=175, y=200)
     
     # DROPDOWN MENU FOR ENGLISH/SWEDISH MODE
     
@@ -967,7 +1055,7 @@ def stop_progressbar():
 
 splash_root.after(1950, stop_progressbar)
 
-bar.place(x=-2, y=307, relwidth=1, relheight=0.042)
+bar.place(x=12, y=449, relwidth=0.95, relheight=0.042)
 
 
 
