@@ -72,8 +72,13 @@ def main_window():
         driver = webdriver.Chrome(chrome_path, options=Options())
 
         if url_check_var.get() == 1:
-            global user_sanasto
-            user_sanasto = custom_sanasto
+            if custom_sanasto != "":
+                global user_sanasto
+                user_sanasto = custom_sanasto
+            else: 
+                write("Url field empty!\nUsing selected language sanasto")
+                user_sanasto = lang_variable.get()
+        
         else: 
             user_sanasto = lang_variable.get()
 
@@ -970,7 +975,10 @@ def main_window():
     # SAVE SETTINGS BUTTON
     
     def save_settings():
-        write("Settings saved")
+        
+        if str(skip_check['state']) != 'disabled':
+            write("Settings saved")
+        
         settings_root.withdraw()
     
     save = Button(settings_root, bg=gray, width=6, height=1, text="save", command=save_settings)
