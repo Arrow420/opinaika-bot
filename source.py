@@ -1,6 +1,7 @@
 from mttkinter import mtTkinter as tk
 from tkinter import Entry, Button, PhotoImage, Label, Canvas, mainloop, ttk, INSERT, messagebox, StringVar, OptionMenu, Checkbutton, IntVar, Text, END, Toplevel, Scale
 from idlelib.tooltip import Hovertip
+from tkinter.font import Font
 from pygame import mixer
 import os
 import time
@@ -65,16 +66,21 @@ def main_window():
         rus_sanasto = "https://www.opinaika.fi/opinaika/so.cfm?s=aihioselaus&va=36509"
         fre_sanasto = "https://www.opinaika.fi/opinaika/so.cfm?s=aihioselaus&va=66922"
         ita_sanasto = "https://www.opinaika.fi/opinaika/so.cfm?s=aihioselaus&va=108152"
+        custom_sanasto = url_entry_var.get()
 
         chrome_path = "img\\chromedriver.exe"
         driver = webdriver.Chrome(chrome_path, options=Options())
 
-        if url_check == 0:
+        if url_check_var.get() == 1:
+            global user_sanasto
+            user_sanasto = custom_sanasto
+        else: 
             user_sanasto = lang_variable.get()
-        else:
-            user_sanasto = url_entry_var.get()
 
-        if user_sanasto == "Swedish": 
+        if user_sanasto == str(custom_sanasto):
+            driver.get(str(custom_sanasto))
+
+        elif user_sanasto == "Swedish": 
             driver.get(swe_sanasto)
         
         elif user_sanasto == "English":
@@ -94,9 +100,7 @@ def main_window():
                     
         elif user_sanasto == "Italian":
             driver.get(ita_sanasto)
-        
-        else:
-            driver.get(url_entry_var.get())
+
         
         print(user_sanasto)
         write(user_sanasto)
@@ -731,17 +735,19 @@ def main_window():
 
         omg()
         
-        print("Automation finished")
-        write("Automation finished!")
+        print("Automation ended!")
+        write("Automation ended!")
         time.sleep(5)
         driver.quit()
-
-
+ 
 
     # COLOR HEX
 
     navy = '#343647'
     gray = '#CCCCCC'
+    baby_blue = '#99ccff'
+    light_blue = '#899cf0'
+    light_purple = '#c2c4f5'
 
 
     # BACKGROUND IMAGE
@@ -786,7 +792,7 @@ def main_window():
     # NUMBER SCALES #
 
     # SKIP SCALE
-
+    
     skip_scale_var = IntVar()
     skip_scale = Scale(settings_root, bg=gray, resolution=5, variable=skip_scale_var, from_ = 0, to = 100, orient = "horizontal", width=20, sliderlength=40, length=450, label="Change the minimium score for skipping an exercise")  
     skip_scale.set(70)
@@ -796,6 +802,11 @@ def main_window():
     close_skip = Button(settings_root, bg=gray, height=1, width=5, text="ok")
     
     def hide_skip_scale():
+        global popup_open
+        popup_open = 0
+        write("Skip threshold set to " + str(skip_scale_var.get()) + " points")
+        human_check.config(state='normal')
+        url_check.config(state='normal')
         skip_scale.lower()
         close_skip.lower()
     
@@ -814,6 +825,11 @@ def main_window():
     close_human = Button(settings_root, bg=gray, height=1, width=5, text="ok")
     
     def hide_human_scale():
+        global popup_open
+        popup_open = 0
+        write("Human threshold set to " + str(human_scale_var.get()) + " points")
+        skip_check.config(state='normal')
+        url_check.config(state='normal')
         human_scale.lower()
         close_human.lower()
     
@@ -823,6 +839,10 @@ def main_window():
 
     # CUSTOM URL ENTRY
 
+    url_label = Label(settings_root, bg=gray, fg="black", width=45, height=3, text="Enter your own URL for opinaika", anchor="n")
+    url_label.place(x=70, y=220)
+    url_label.lower()
+
     url_entry_var = StringVar(value="")
     url_entry = Entry(settings_root, bg=navy, fg="white", width=45, textvariable=url_entry_var)
     url_entry.place(x=71, y=274)
@@ -831,8 +851,14 @@ def main_window():
     close_url = Button(settings_root, bg=gray, height=1, width=5, text="ok")
     
     def hide_url_entry():
+        global popup_open
+        popup_open = 0
+        write('Opinaika url set to "' + str(url_entry_var.get()) + '"')
+        skip_check.config(state='normal')
+        human_check.config(state='normal')
         url_entry.lower()
         close_url.lower()
+        url_label.lower()
     
     close_url['command'] = hide_url_entry
     close_url.place(x=255, y=320)
@@ -840,29 +866,65 @@ def main_window():
 
     # SKIP CHECKBOX
     
+    popup_open = 0
+
     skip_var = IntVar(value=1)
     
     def show_skip_scale():
+        global popup_open
         if skip_var.get() == 1:
+            popup_open = 1
+            if popup_open == 1:
+                human_check.config(state='disabled')
+                url_check.config(state='disabled')
+                skip_scale.lift()
+                close_skip.lift()
+            else:
+                human_check.config(state='normal')
+                url_check.config(state='normal')
             skip_scale.lift()
             close_skip.lift()
         else:
+            popup_open = 0
+            if popup_open == 1:
+                human_check.config(state='disabled')
+                url_check.config(state='disabled')
+                skip_scale.lift()
+                close_skip.lift()
+            else:
+                human_check.config(state='normal')
+                url_check.config(state='normal')
             skip_scale.lower()
             close_skip.lower()
-    
+
     skip_check = Checkbutton(settings_root, bg=gray, height=1, text="Skip completed exercises", variable=skip_var, command=show_skip_scale)
     skip_check.place(x=10, y=15)
-    Hovertip(skip_check, "Skip the exercise if the score is 75 or higher")    
+    Hovertip(skip_check, "Skip the exercise if the score is 70p or higher")    
     
     # HUMANLIKE BEHAVIOUR CHECKBOX
     
     human_var = IntVar(value=0)
     
     def show_human_scale():
+        global popup_open
         if human_var.get() == 1:
+            popup_open = 1
+            if popup_open == 1:
+                url_check.config(state='disabled')
+                skip_check.config(state='disabled')
+            else:
+                url_check.config(state='normal')
+                skip_check.config(state='normal')
             human_scale.lift()
             close_human.lift()
         else:
+            popup_open = 0
+            if popup_open == 1:
+                url_check.config(state='disabled')
+                skip_check.config(state='disabled')
+            else:
+                url_check.config(state='normal')
+                skip_check.config(state='normal')
             human_scale.lower()
             close_human.lower()
     
@@ -872,17 +934,35 @@ def main_window():
 
     # CUSTOM URL GIVEN BY USER
   
-    url_var = IntVar(value=0)
+    url_check_var = IntVar(value=0)
     
     def show_url_entry():
-        if url_var.get() == 1:
+        global popup_open
+        if url_check_var.get() == 1:
+            popup_open = 1
+            if popup_open == 1:
+                human_check.config(state='disabled')
+                skip_check.config(state='disabled')
+            else:
+                human_check.config(state='normal')
+                skip_check.config(state='normal')
+            url_label.lift()
             url_entry.lift()
             close_url.lift()
         else:
+            popup_open = 0
+            if popup_open == 1:
+                human_check.config(state='disabled')
+                skip_check.config(state='disabled')
+            else:
+                human_check.config(state='normal')
+                skip_check.config(state='normal')
+            url_label.lower()
             url_entry.lower()
             close_url.lower()
+
     
-    url_check = Checkbutton(settings_root, bg=gray, height=1, text="Custom URL", variable=url_var, command=show_url_entry)
+    url_check = Checkbutton(settings_root, bg=gray, height=1, text="Custom URL", variable=url_check_var, command=show_url_entry)
     url_check.place(x=10, y=105)
     Hovertip(url_check, "Use custom opinaika URL given by user")
 
@@ -890,8 +970,8 @@ def main_window():
     # SAVE SETTINGS BUTTON
     
     def save_settings():
-        settings_root.withdraw()
         write("Settings saved")
+        settings_root.withdraw()
     
     save = Button(settings_root, bg=gray, width=6, height=1, text="save", command=save_settings)
     save.place(x=10, y=590)
@@ -963,8 +1043,13 @@ def main_window():
 
     terminal = Text(root, bg=navy, fg="white", height=9, width=38)
     terminal.place(x=0, y=575)
-    terminal.insert(END, "Dirty my life, I clean for you\nI dream of life, it might come true\nI need a break, can I live?\nI need to change something quick\nI pay the price for the sin\nI'm at the gate, let me in\nI take my life for the risk\nI roll a dice, need a six\n")
+    terminal.tag_config("green", background=navy, foreground="green")
+    terminal.tag_config("baby_blue", background=navy, foreground=baby_blue)
+    terminal.tag_config("light_blue", background=navy, foreground=light_blue)
+    terminal.tag_config("light_purple", background=navy, foreground=light_purple)
     
+
+    terminal.insert(END, "Dirty my life, I clean for you\nI dream of life, it might come true\nI need a break, can I live?\nI need to change something quick\nI pay the price for the sin\nI'm at the gate, let me in\nI take my life for the risk\nI roll a dice, need a six\n", 'baby_blue')
     terminal.config(state='disabled')
     
     # TEXT INTO TERMINAL
@@ -976,7 +1061,7 @@ def main_window():
             text += "{}".format(i)
             text += sep
         text += end
-        terminal.insert(INSERT, text)
+        terminal.insert(INSERT, text, "light_purple")
         terminal.see(END)
         terminal.config(state='disabled')
     
@@ -1003,8 +1088,7 @@ def main_window():
             write("Invalid email/pass")
         
         else:
-            terminal.config(state='normal')
-            terminal.delete('1.0', END)
+            write("\n")
             lock()
             chrome_thread = threading.Thread(target=chrome_script)
             chrome_thread.daemon = True
