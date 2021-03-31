@@ -48,7 +48,7 @@ def main_window():
 
     splash_root.destroy()
     root = tk.Tk()
-    root.title("Opinaika bot v. 2.2.2")
+    root.title("Opinaika bot v. 1.9.9")
     root.geometry('1072x772+450+75')
     root.iconbitmap('img\\lain_favicon.ico')
     root.resizable(False, False)
