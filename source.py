@@ -1,5 +1,3 @@
-# GLOBALS KOHTA EI TOIMI VITTU SAATANA
-
 from mttkinter import mtTkinter as tk
 from tkinter import Entry, Button, PhotoImage, Label, Canvas, mainloop, ttk, INSERT, messagebox, StringVar, OptionMenu, Checkbutton, IntVar, Text, END, Toplevel, Scale
 from idlelib.tooltip import Hovertip
@@ -587,7 +585,7 @@ def main_window():
                         if piste_threshold_reached == True:
                             break
 
-                    aukko_oikea_vastaus = (aukko[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"}', 1)[0]
+                    aukko_oikea_vastaus = (aukko[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"', 1)[0].strip("/")
                     print(aukko_oikea_vastaus)
                     write(aukko_oikea_vastaus)
                     (aukko[i]).send_keys(aukko_oikea_vastaus)
@@ -597,14 +595,7 @@ def main_window():
             time.sleep(10)
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
-
-            if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-
-            else:
-                driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-            
-
+            driver.execute_script("window.history.go(-2")
             time.sleep(0.5)
             print("Exercise done!")
 
@@ -708,19 +699,9 @@ def main_window():
                 elif exercise == "Aukko":
                     aukko()                    
                 else:
-                    print("Unknown exercise name! \nIdentifying exercise...")
-                    write("Unknown exercise name! \nIdentifying exercise...")
+                    print("Unknown exercise name!")
+                    write("Unknown exercise name!")
 
-                    aihiokoodi = driver.find_element_by_class_name("aihiokoodilaatikko")
-                    aihiokoodi.click()
-                    exercise = driver.find_element_by_xpath('//*[@id="divAihioPopup"]/div/table[2]/tbody/tr[2]/td[2]').text.strip("Harjoitus()").strip()
-                    time.sleep(0.5)
-                    sulje_aihiokoodi = driver.find_elements_by_id('divSuljeAihioKortti')
-                    sulje_aihiokoodi.click()
-
-                    globals()[exercise]()
-                    print("Exercise indentified: "+ str(exercise) +".")
-                    write("Exercise indentified: "+ str(exercise) +".")
 
 
         # EXERCISES FUNCTION WITH "SKIP COMPLETED" ENABLED
@@ -774,19 +755,8 @@ def main_window():
                     elif exercise == "Aukko":
                         aukko()                    
                     else:
-                        print("Unknown exercise name! \nIdentifying exercise...")
-                        write("Unknown exercise name! \nIdentifying exercise...")
-
-                        aihiokoodi = driver.find_element_by_class_name("aihiokoodilaatikko")
-                        aihiokoodi.click()
-                        exercise = driver.find_element_by_xpath('//*[@id="divAihioPopup"]/div/table[2]/tbody/tr[2]/td[2]').text.strip("Harjoitus()").strip()
-                        time.sleep(0.5)
-                        sulje_aihiokoodi = driver.find_elements_by_id('divSuljeAihioKortti')
-                        sulje_aihiokoodi.click()
-    
-                        globals()[exercise]()
-                        print("Exercise indentified: "+ str(exercise) +".")
-                        write("Exercise indentified: "+ str(exercise) +".")
+                        print("Unknown exercise name!")
+                        write("Unknown exercise name!")
 
         # FINAL FUNCTION FOR KURSSITEHTÄVÄT
 
@@ -801,14 +771,17 @@ def main_window():
                 write(kurssit_nimi)
                 time.sleep(0.3)
                 kurssi_menu()
+                time.sleep(0.3)
                 siirry_kurssiin = driver.find_element_by_class_name('ikonipainikesiirrykurssiin')
                 siirry_kurssiin.click()
+                time.sleep(0.3)
 
 
        # KURSSI MENU
         
         def kurssi_menu():
             
+            time.sleep(0.5)
             table = driver.find_element_by_xpath('//*[@id="divTehtavakohdat"]/div/table')
             global rows
             rows = table.find_elements(By.TAG_NAME, "tr")
@@ -832,56 +805,68 @@ def main_window():
 
         def kurssi_exercises():
             
-            for i in range(len(rows[1:])):
+            exercise_dict = {'tutustuminen': tutustuminen, 'aukkolause': aukkolause, 'aukkosana': aukkosana, 'kuvavalinta': kuvavalinta, 'monivalinta': monivalinta, 'ristikko': ristikko, 'piilosana': piilosana, 'yhdistely': yhdistely, 'aukko': aukko}
+            
+            for row in range(len(rows[1:])):
                 
                 if skip_var.get() == 1:
                     
-                    skip_threshold = skip_scale_var.get()
+                    if kurssi_pisteet == 'Avattu':
+                        kurssi_pisteet = "0"
                     
+                    if kurssi_pisteet == '-':
+                        kurssi_pisteet = "0"
+                    
+                    skip_threshold = skip_scale_var.get()
                     if int(kurssi_pisteet) > skip_threshold:    
+                        
                         print(kurssi_otsikko + " " + "already completed")
                         write(kurssi_otsikko + " " + "already completed")
                     else:
                         kurssi_harjoitus.click()
-                        time.sleep(0.4)
+                        time.sleep(0.5)
                         aihiokoodi = driver.find_element_by_xpath('//*[@id="divYPnimilaatikko"]/span[1]')
                         aihiokoodi.click()
-                        time.sleep(0.4)
-                        aihio_table = driver.find_element_by_id('divAihioPopup')
-                        exercise_row = aihio_table.find_elements(By.TAG_NAME, "tr")[2]
-                        exercise = exercise_row.find_elements(By.TAG_NAME, "td")[1].text.strip("Harjoitus ( ").strip(")")
+                        time.sleep(1)
+                        exercise_table = driver.find_element_by_xpath('//*[@id="divAihioPopup"]/div/table[2]')
+                        exercise_row = exercise_table.find_elements(By.TAG_NAME, "tr")[1]
+                        exercise = str(exercise_row.find_elements(By.TAG_NAME, "td")[1].text.strip("Harjoitus ( ").strip(")").lower())
                         print(exercise)
+                        write(exercise)
                         sulje_aihiokoodi = driver.find_element_by_id('divSuljeAihioKortti')
-                        time.sleep(0.2)
+                        time.sleep(0.5)
                         sulje_aihiokoodi.click()
+                        time.sleep(0.5)
 
-                        globals()[exercise]()
-                        print("Exercise indentified: "+ str(exercise) +".")
-                        write("Exercise indentified: "+ str(exercise) +".")
+                        exercise_dict[exercise]()
+                        
                     
                 else:
                     kurssi_harjoitus.click()
-                    time.sleep(0.4)
+                    time.sleep(0.5)
                     aihiokoodi = driver.find_element_by_xpath('//*[@id="divYPnimilaatikko"]/span[1]')
                     aihiokoodi.click()
-                    time.sleep(0.4)
-                    aihio_table = driver.find_element_by_id('divAihioPopup')
-                    exercise_row = aihio_table.find_elements(By.TAG_NAME, "tr")[2]
-                    exercise = exercise_row.find_elements(By.TAG_NAME, "td")[1].text.strip("Harjoitus ( ").strip(")")
+                    time.sleep(1)
+                    exercise_table = driver.find_element_by_xpath('//*[@id="divAihioPopup"]/div/table[2]')
+                    exercise_row = exercise_table.find_elements(By.TAG_NAME, "tr")[1]
+                    exercise = str(exercise_row.find_elements(By.TAG_NAME, "td")[1].text.strip("Harjoitus ( ").strip(")").lower())
                     print(exercise)
+                    write(exercise)
                     sulje_aihiokoodi = driver.find_element_by_id('divSuljeAihioKortti')
-                    time.sleep(0.2)
+                    time.sleep(0.5)
                     sulje_aihiokoodi.click()
+                    time.sleep(0.5)
 
-                    globals()[exercise]()
-                    print("Exercise indentified: "+ str(exercise) +".")
-                    write("Exercise indentified: "+ str(exercise) +".")
+                    exercise_dict[exercise]()
 
 
         # WHICH FUNCTION SELECT
         
         if str(url_type_var.get()) == "Kurssitehtävät":
-            kurssi_omg()
+            if custom_sanasto != "":
+                kurssi_omg()
+            else:
+                omg()
         
         else:
             omg()
