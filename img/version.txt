@@ -34,8 +34,8 @@ VSVersionInfo(
         StringStruct(u'ProductVersion', u'1.9.9.9'), #<- should be same as filevers
         StringStruct(u'OriginalFilename', u'opinaika-bot.exe'),
         StringStruct(u'FileDescription', u'Selenium bot for opinaika'),
-        StringStruct(u'LegalCopyright', u'©2021 A dream of life'),
-        StringStruct(u'LegalTrademarks', u'All rights reserved'),])
+        StringStruct(u'LegalCopyright', u'©2021  A dream of life'),
+        StringStruct(u'LegalTrademarks', u'©2021  All rights reserved'),])
       ]),
     VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
   ]

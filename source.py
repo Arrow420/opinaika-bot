@@ -13,9 +13,12 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
+from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+
 
 # SPLASH SCREEN
 
@@ -188,11 +191,20 @@ def main_window():
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-
+            if str(url_type_var.get()) == "Kurssitehtävät":
+                if custom_sanasto != "":
+                    driver.execute_script("window.history.go(-1)")
+                else:
+                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                    else:
+                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            
             else:
-                driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                else:
+                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
             
 
             time.sleep(0.5)
@@ -225,11 +237,20 @@ def main_window():
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-
+            if str(url_type_var.get()) == "Kurssitehtävät":
+                if custom_sanasto != "":
+                    driver.execute_script("window.history.go(-1)")
+                else:
+                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                    else:
+                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            
             else:
-                driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                else:
+                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
             
 
             time.sleep(0.5)
@@ -264,11 +285,20 @@ def main_window():
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-
+            if str(url_type_var.get()) == "Kurssitehtävät":
+                if custom_sanasto != "":
+                    driver.execute_script("window.history.go(-1)")
+                else:
+                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                    else:
+                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            
             else:
-                driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                else:
+                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
             
 
             time.sleep(0.5)
@@ -302,11 +332,20 @@ def main_window():
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-
+            if str(url_type_var.get()) == "Kurssitehtävät":
+                if custom_sanasto != "":
+                    driver.execute_script("window.history.go(-1)")
+                else:
+                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                    else:
+                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            
             else:
-                driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                else:
+                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
             
 
             time.sleep(0.5)
@@ -338,11 +377,20 @@ def main_window():
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-
+            if str(url_type_var.get()) == "Kurssitehtävät":
+                if custom_sanasto != "":
+                    driver.execute_script("window.history.go(-1)")
+                else:
+                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                    else:
+                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            
             else:
-                driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                else:
+                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
             
 
             time.sleep(0.5)
@@ -385,11 +433,20 @@ def main_window():
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-
+            if str(url_type_var.get()) == "Kurssitehtävät":
+                if custom_sanasto != "":
+                    driver.execute_script("window.history.go(-1)")
+                else:
+                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                    else:
+                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            
             else:
-                driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                else:
+                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
             
             time.sleep(0.5)
             print("Exercise done!")
@@ -476,11 +533,20 @@ def main_window():
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-
+            if str(url_type_var.get()) == "Kurssitehtävät":
+                if custom_sanasto != "":
+                    driver.execute_script("window.history.go(-1)")
+                else:
+                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                    else:
+                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            
             else:
-                driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                else:
+                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
     
 
             time.sleep(0.5)
@@ -518,11 +584,20 @@ def main_window():
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-
+            if str(url_type_var.get()) == "Kurssitehtävät":
+                if custom_sanasto != "":
+                    driver.execute_script("window.history.go(-1)")
+                else:
+                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                    else:
+                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            
             else:
-                driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                else:
+                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
             
 
             time.sleep(0.5)
@@ -534,7 +609,11 @@ def main_window():
 
         def yhdistely():
             
-            yhdit = driver.find_elements_by_xpath("//*[@data-oikeaarvo]")
+            time.sleep(0.2)            
+            driver.execute_script("window.scrollTo(0, 550);")
+            time.sleep(0.2)
+
+            yhdit = driver.find_elements_by_class_name("yhdistettava.yhdistettava_kohde.tekstiyhdistely_kohde")
 
             for i in range(len(yhdit)):
                 
@@ -548,20 +627,35 @@ def main_window():
                 
                     yhdistely_oikea_vastaus = (yhdit[i]).get_attribute('data-oikeaarvo')
                     (yhdit[i]).click()
-                    driver.find_element_by_xpath('//div[text()="%s"]' % yhdistely_oikea_vastaus).click()
-                    print(yhdistely_oikea_vastaus)
-                    write(yhdistely_oikea_vastaus)
+                    time.sleep(0.2)
+                    yhdisteet = driver.find_elements_by_class_name('sekoitettava.harjoituskohta.toggleoncorrect.yhdistettava.yhdistettava_lahde.tekstiyhdistely_lahde')
+                    for i in yhdisteet:
+                        if str(i.text) == str(yhdistely_oikea_vastaus):
+                            print(yhdistely_oikea_vastaus)
+                            write(yhdistely_oikea_vastaus)
+                            i.click()
+                    
+                    time.sleep(0.2)
 
             
             time.sleep(12)
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-
+            if str(url_type_var.get()) == "Kurssitehtävät":
+                if custom_sanasto != "":
+                    driver.execute_script("window.history.go(-1)")
+                else:
+                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                    else:
+                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            
             else:
-                driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                else:
+                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
             
 
             time.sleep(0.5)
@@ -595,10 +689,31 @@ def main_window():
             time.sleep(10)
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
-            driver.execute_script("window.history.go(-2")
+            
+            if str(url_type_var.get()) == "Kurssitehtävät":
+                if custom_sanasto != "":
+                    driver.execute_script("window.history.go(-1)")
+                else:
+                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                    else:
+                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            
+            else:
+                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                else:
+                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            
+            
             time.sleep(0.5)
             print("Exercise done!")
 
+        # TEORIA
+
+        def teoria():
+            
+            print("lul")
 
 
         # SANASTO MENU
@@ -657,7 +772,9 @@ def main_window():
         # EXERCISES FUNCTION
 
         def exercises():
-
+    
+            exercise_dict = {'tutustuminen': tutustuminen, 'aukkolause': aukkolause, 'aukkosana': aukkosana, 'kuvavalinta': kuvavalinta, 'monivalinta': monivalinta, 'ristikko': ristikko, 'piilosana': piilosana, 'yhdistely': yhdistely, 'aukko': aukko}
+            
             for i in range(len(driver.find_elements_by_class_name('selausaihio_aladivi'))):
                 
                 exercise = (driver.find_elements_by_class_name('selausaihio_aladivi')[i]).get_attribute('innerText').partition('\n')[0][4:]
@@ -698,15 +815,34 @@ def main_window():
                     yhdistely()
                 elif exercise == "Aukko":
                     aukko()                    
+                elif exercise == "Teoria":
+                    teoria()                 
                 else:
                     print("Unknown exercise name!")
                     write("Unknown exercise name!")
+                    time.sleep(0.5)
+                    aihiokoodi = driver.find_element_by_xpath('//*[@id="divYPnimilaatikko"]/span[1]')
+                    aihiokoodi.click()
+                    time.sleep(1)
+                    exercise_table = driver.find_element_by_xpath('//*[@id="divAihioPopup"]/div/table[2]')
+                    exercise_row = exercise_table.find_elements(By.TAG_NAME, "tr")[1]
+                    exercise = str(exercise_row.find_elements(By.TAG_NAME, "td")[1].text.strip("Harjoitus ( ").strip(")").lower())
+                    print("Exercise indentified: "+ str(exercise) +".")
+                    write("Exercise indentified: "+ str(exercise) +".")
+                    sulje_aihiokoodi = driver.find_element_by_id('divSuljeAihioKortti')
+                    time.sleep(0.5)
+                    sulje_aihiokoodi.click()
+                    time.sleep(0.5)
+
+                    exercise_dict[exercise]()
 
 
 
         # EXERCISES FUNCTION WITH "SKIP COMPLETED" ENABLED
 
         def exercises_skip_enabled():
+
+            exercise_dict = {'tutustuminen': tutustuminen, 'aukkolause': aukkolause, 'aukkosana': aukkosana, 'kuvavalinta': kuvavalinta, 'monivalinta': monivalinta, 'ristikko': ristikko, 'piilosana': piilosana, 'yhdistely': yhdistely, 'aukko': aukko}
 
             for i in range(len(driver.find_elements_by_class_name('selausaihio_aladivi'))):
                 
@@ -754,76 +890,11 @@ def main_window():
                         yhdistely()
                     elif exercise == "Aukko":
                         aukko()                    
+                    elif exercise == "Teoria":
+                        teoria()   
                     else:
                         print("Unknown exercise name!")
                         write("Unknown exercise name!")
-
-        # FINAL FUNCTION FOR KURSSITEHTÄVÄT
-
-        def kurssi_omg():
-            
-            # TOP LEVEL (MENU)
-            kurssit = driver.find_elements_by_class_name("avaakurssitehtava.ikonipainike")
-            for i in range(len(kurssit)):
-                kurssit_nimi = (kurssit[i]).text.strip()
-                (kurssit[i]).click()
-                print(kurssit_nimi)
-                write(kurssit_nimi)
-                time.sleep(0.3)
-                kurssi_menu()
-                time.sleep(0.3)
-                siirry_kurssiin = driver.find_element_by_class_name('ikonipainikesiirrykurssiin')
-                siirry_kurssiin.click()
-                time.sleep(0.3)
-
-
-       # KURSSI MENU
-        
-        def kurssi_menu():
-            
-            time.sleep(0.5)
-            table = driver.find_element_by_xpath('//*[@id="divTehtavakohdat"]/div/table')
-            global rows
-            rows = table.find_elements(By.TAG_NAME, "tr")
-            for row in rows[1:]:
-                global kurssi_otsikko
-                kurssi_otsikko = str(row.find_elements(By.TAG_NAME, "td")[1].text)
-                global kurssi_pisteet
-                kurssi_pisteet = str(row.find_elements(By.TAG_NAME, "td")[2].text)
-                global kurssi_harjoitus
-                kurssi_harjoitus = row.find_elements(By.TAG_NAME, "td")[3]
-                
-                print(kurssi_otsikko)
-                write(kurssi_otsikko)
-                print(str(kurssi_pisteet) + " points")
-                write(str(kurssi_pisteet) + " points")
-                
-                kurssi_exercises()
-
-                
-        # KURSSI EXERCISES
-
-        def kurssi_exercises():
-            
-            exercise_dict = {'tutustuminen': tutustuminen, 'aukkolause': aukkolause, 'aukkosana': aukkosana, 'kuvavalinta': kuvavalinta, 'monivalinta': monivalinta, 'ristikko': ristikko, 'piilosana': piilosana, 'yhdistely': yhdistely, 'aukko': aukko}
-            
-            for row in range(len(rows[1:])):
-                
-                if skip_var.get() == 1:
-                    
-                    if kurssi_pisteet == 'Avattu':
-                        kurssi_pisteet = "0"
-                    
-                    if kurssi_pisteet == '-':
-                        kurssi_pisteet = "0"
-                    
-                    skip_threshold = skip_scale_var.get()
-                    if int(kurssi_pisteet) > skip_threshold:    
-                        
-                        print(kurssi_otsikko + " " + "already completed")
-                        write(kurssi_otsikko + " " + "already completed")
-                    else:
-                        kurssi_harjoitus.click()
                         time.sleep(0.5)
                         aihiokoodi = driver.find_element_by_xpath('//*[@id="divYPnimilaatikko"]/span[1]')
                         aihiokoodi.click()
@@ -831,34 +902,130 @@ def main_window():
                         exercise_table = driver.find_element_by_xpath('//*[@id="divAihioPopup"]/div/table[2]')
                         exercise_row = exercise_table.find_elements(By.TAG_NAME, "tr")[1]
                         exercise = str(exercise_row.find_elements(By.TAG_NAME, "td")[1].text.strip("Harjoitus ( ").strip(")").lower())
-                        print(exercise)
-                        write(exercise)
+                        print("Exercise indentified: "+ str(exercise) +".")
+                        write("Exercise indentified: "+ str(exercise) +".")
                         sulje_aihiokoodi = driver.find_element_by_id('divSuljeAihioKortti')
                         time.sleep(0.5)
                         sulje_aihiokoodi.click()
                         time.sleep(0.5)
 
                         exercise_dict[exercise]()
-                        
-                    
-                else:
+
+        # FINAL FUNCTION FOR KURSSITEHTÄVÄT
+
+        def kurssi_omg():
+            
+            # TOP LEVEL (MENU)
+            
+            kurssi_list = ["//*[@id='divKurssinTehtavat']/table/tbody/tr[2]/td[1]/div", "//*[@id='divKurssinTehtavat']/table/tbody/tr[3]/td[1]/div",
+                            "//*[@id='divKurssinTehtavat']/table/tbody/tr[4]/td[1]/div", "//*[@id='divKurssinTehtavat']/table/tbody/tr[5]/td[1]/div",
+                            "//*[@id='divKurssinTehtavat']/table/tbody/tr[6]/td[1]/div", "//*[@id='divKurssinTehtavat']/table/tbody/tr[7]/td[1]/div",
+                            "//*[@id='divKurssinTehtavat']/table/tbody/tr[8]/td[1]/div", "//*[@id='divKurssinTehtavat']/table/tbody/tr[9]/td[1]/div",
+                            "//*[@id='divKurssinTehtavat']/table/tbody/tr[10]/td[1]/div", "//*[@id='divKurssinTehtavat']/table/tbody/tr[11]/td[1]/div",
+                            "//*[@id='divKurssinTehtavat']/table/tbody/tr[12]/td[1]/div"]
+
+
+            kurssi_table = driver.find_element_by_xpath('//*[@id="divKurssinTehtavat"]/table')
+            kurssit = kurssi_table.find_elements_by_class_name("avaakurssitehtava.ikonipainike")
+            for i in range(len(kurssit)):
+                kurssi_nimi = driver.find_element_by_xpath((kurssi_list[i])).text
+                print(kurssi_nimi)
+                write(kurssi_nimi)
+                kurssi_harjoitus = driver.find_element_by_xpath((kurssi_list[i]))
+                kurssi_harjoitus.click()
+                time.sleep(0.3)
+                kurssi_menu()
+                time.sleep(0.3)
+                siirry_kurssiin = driver.find_element_by_xpath('//*[@id="divYPlisatoiminnot"]/div')
+                siirry_kurssiin.click()
+                print("Section compledted!")
+                write("Section compledted!")
+                time.sleep(0.3)
+
+
+       # KURSSI MENU
+        
+        def kurssi_menu():
+            
+
+            otsikko_list = ["//*[@id='divTehtavakohdat']/div/table/tbody/tr[2]/td[2]/div", "//*[@id='divTehtavakohdat']/div/table/tbody/tr[3]/td[2]/div",
+                            "//*[@id='divTehtavakohdat']/div/table/tbody/tr[4]/td[2]/div", "//*[@id='divTehtavakohdat']/div/table/tbody/tr[5]/td[2]/div",
+                            "//*[@id='divTehtavakohdat']/div/table/tbody/tr[6]/td[2]/div", "//*[@id='divTehtavakohdat']/div/table/tbody/tr[7]/td[2]/div",
+                            "//*[@id='divTehtavakohdat']/div/table/tbody/tr[8]/td[2]/div"]
+            
+            piste_list = ["//*[@id='divTehtavakohdat']/div/table/tbody/tr[2]/td[3]", "//*[@id='divTehtavakohdat']/div/table/tbody/tr[3]/td[3]",
+                          "//*[@id='divTehtavakohdat']/div/table/tbody/tr[4]/td[3]", "//*[@id='divTehtavakohdat']/div/table/tbody/tr[5]/td[3]",
+                          "//*[@id='divTehtavakohdat']/div/table/tbody/tr[6]/td[3]", "//*[@id='divTehtavakohdat']/div/table/tbody/tr[7]/td[3]",
+                          "//*[@id='divTehtavakohdat']/div/table/tbody/tr[8]/td[3]"]
+            
+            exercise_list = ["//*[@id='divTehtavakohdat']/div/table/tbody/tr[2]/td[4]/div", "//*[@id='divTehtavakohdat']/div/table/tbody/tr[3]/td[4]/div",
+                           "//*[@id='divTehtavakohdat']/div/table/tbody/tr[4]/td[4]/div", "//*[@id='divTehtavakohdat']/div/table/tbody/tr[5]/td[4]/div",
+                           "//*[@id='divTehtavakohdat']/div/table/tbody/tr[6]/td[4]/div", "//*[@id='divTehtavakohdat']/div/table/tbody/tr[7]/td[4]/div",
+                           "//*[@id='divTehtavakohdat']/div/table/tbody/tr[8]/td[4]/div"]
+
+            time.sleep(0.2)
+            table = driver.find_element_by_xpath('//*[@id="divTehtavakohdat"]/div/table')
+            otsikot = table.find_elements(By.CLASS_NAME, "kurssitehtavakohtaotsikko")
+
+
+            for i in range(len(otsikot)):
+                
+                global kurssi_otsikko
+                kurssi_otsikko = driver.find_element_by_xpath((otsikko_list[i])).text
+                print(kurssi_otsikko)
+                write(kurssi_otsikko)
+                
+                global kurssi_pisteet
+                kurssi_pisteet = driver.find_element_by_xpath((piste_list[i])).text
+                print(kurssi_pisteet)
+                write(kurssi_pisteet)
+                
+
+                time.sleep(0.2)
+                kurssi_harjoitus = driver.find_element_by_xpath((exercise_list[i]))
+                 
+                if str(kurssi_pisteet) == 'Avattu':
+                    kurssi_pisteet = "0"
+                
+                elif str(kurssi_pisteet) == '-':
+                    kurssi_pisteet = "0"
+                
+
+                skip_threshold = skip_scale_var.get()
+                
+                if int(kurssi_pisteet) > skip_threshold:
+                    print(kurssi_otsikko + " " + "already completed")
+                    write(kurssi_otsikko + " " + "already completed")
+                
+                else:    
                     kurssi_harjoitus.click()
-                    time.sleep(0.5)
-                    aihiokoodi = driver.find_element_by_xpath('//*[@id="divYPnimilaatikko"]/span[1]')
-                    aihiokoodi.click()
-                    time.sleep(1)
-                    exercise_table = driver.find_element_by_xpath('//*[@id="divAihioPopup"]/div/table[2]')
-                    exercise_row = exercise_table.find_elements(By.TAG_NAME, "tr")[1]
-                    exercise = str(exercise_row.find_elements(By.TAG_NAME, "td")[1].text.strip("Harjoitus ( ").strip(")").lower())
-                    print(exercise)
-                    write(exercise)
-                    sulje_aihiokoodi = driver.find_element_by_id('divSuljeAihioKortti')
-                    time.sleep(0.5)
-                    sulje_aihiokoodi.click()
-                    time.sleep(0.5)
+                    time.sleep(0.2)
+                    kurssi_exercises()
+                    
 
-                    exercise_dict[exercise]()
+                
+        # KURSSI EXERCISES
 
+        def kurssi_exercises():
+            
+            exercise_dict = {'tutustuminen': tutustuminen, 'aukkolause': aukkolause, 'aukkosana': aukkosana, 'kuvavalinta': kuvavalinta, 'monivalinta': monivalinta, 'ristikko': ristikko, 'piilosana': piilosana, 'yhdistely': yhdistely, 'aukko': aukko}
+
+            time.sleep(0.5)
+            aihiokoodi = driver.find_element_by_xpath('//*[@id="divYPnimilaatikko"]/span[1]')
+            aihiokoodi.click()
+            time.sleep(0.8)
+            aihiokoodi_table = driver.find_element_by_xpath('//*[@id="divAihioPopup"]/div/table[2]')
+            aihiokoodi_row = aihiokoodi_table.find_elements(By.TAG_NAME, "tr")[1]
+            exercise = str(aihiokoodi_row.find_elements(By.TAG_NAME, "td")[1].text.strip("Harjoitus ( ").strip(")").rstrip("(Teoria").lower())
+            print(exercise)
+            write(exercise)
+            sulje_aihiokoodi = driver.find_element_by_id('divSuljeAihioKortti')
+            time.sleep(0.2)
+            sulje_aihiokoodi.click()
+            time.sleep(0.5)
+
+            exercise_dict[exercise]()
+            
 
         # WHICH FUNCTION SELECT
         
