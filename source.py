@@ -75,39 +75,35 @@ def main_window():
         chrome_path = "img\\chromedriver.exe"
         driver = webdriver.Chrome(chrome_path, options=Options())
 
-        if url_check_var.get() == 1:
-            if custom_sanasto != "":
+        if url_check_var.get() == 1 and custom_sanasto != "":
                 global user_sanasto
                 user_sanasto = custom_sanasto
-            else: 
-                write("Url field empty!\nUsing selected language sanasto")
-                user_sanasto = lang_variable.get()
-        
         else: 
+            write("Url field empty!\nUsing selected language sanasto")
             user_sanasto = lang_variable.get()
 
-        if user_sanasto == str(custom_sanasto):
+        if user_sanasto == str(custom_sanasto): 
             driver.get(str(custom_sanasto))
 
         elif user_sanasto == "Swedish": 
             driver.get(swe_sanasto)
         
-        elif user_sanasto == "English":
+        elif user_sanasto == "English": 
             driver.get(eng_sanasto)
                 
-        elif user_sanasto == "German":
+        elif user_sanasto == "German": 
             driver.get(ger_sanasto)
                     
-        elif user_sanasto == "Spanish":
+        elif user_sanasto == "Spanish": 
             driver.get(spa_sanasto)
                     
-        elif user_sanasto == "Russian":
+        elif user_sanasto == "Russian": 
             driver.get(rus_sanasto)
                     
-        elif user_sanasto == "French":
+        elif user_sanasto == "French": 
             driver.get(fre_sanasto)
                     
-        elif user_sanasto == "Italian":
+        elif user_sanasto == "Italian": 
             driver.get(ita_sanasto)
 
         
@@ -132,26 +128,33 @@ def main_window():
         
         def human_behaviour():
             
-            if human_state == 1:
-                piste_threshold = human_scale.get()
-                tehtyja_kohtia = driver.find_element_by_xpath('//*[@id="divKohtiaTehty"]').text
+            piste_threshold = human_scale.get()
+            tehtyja_kohtia = driver.find_element_by_xpath('//*[@id="divKohtiaTehty"]').text
             
-                if len(tehtyja_kohtia) < 10:
-                    pisteet = 0
-                else:
-                    pisteet = tehtyja_kohtia.split("Pisteet: ", 1)[1].split(".", 1)[0]
-                    print(pisteet + " points")
-                    write(pisteet + " points")                
-                        
-                    if int(pisteet) >= int(piste_threshold): 
-                        time.sleep(0.5)
-                        global piste_threshold_reached
-                        piste_threshold_reached = True
-                        return
-
+            if len(tehtyja_kohtia) < 10: pisteet = 0
+            else:
+                pisteet = tehtyja_kohtia.split("Pisteet: ", 1)[1].split(".", 1)[0]
+                print(pisteet + " points")
+                write(pisteet + " points")                
                     
+                if int(pisteet) >= int(piste_threshold): 
+                    time.sleep(0.2)
+                    global piste_threshold_reached
+                    piste_threshold_reached = True
+                    return
 
 
+        # END OF EXERCISE
+
+        def end_of_exercise():
+                
+            if str(url_type_var.get()) == "Kurssitehtävät" and custom_sanasto != "": driver.execute_script("window.history.go(-1)")
+            else:
+                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
+                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
+                    
+                else: driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+                        
         # LOGIN #
 
         username_input = username.get()
@@ -175,83 +178,56 @@ def main_window():
 
 
         login()
-        time.sleep(2)
+        time.sleep(1.5)
+
+
 
         # TUTUSTUMINEN
 
         def tutustuminen():
             
             driver.execute_script("window.scrollTo(0, 560);")
-            time.sleep(1)
-            elems = driver.find_elements_by_class_name("painettava.tutustumisrivioletus.perussanasto")
-            for i in range(len(elems)):
-                (elems[i]).click()
+            time.sleep(0.1)
+            tutut = driver.find_elements_by_class_name("painettava.tutustumisrivioletus.perussanasto")
+            for i in range(len(tutut)):
+                (tutut[i]).click()
 
             time.sleep(10)
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if str(url_type_var.get()) == "Kurssitehtävät":
-                if custom_sanasto != "":
-                    driver.execute_script("window.history.go(-1)")
-                else:
-                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                    else:
-                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            end_of_exercise()
             
-            else:
-                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                else:
-                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-            
-
             time.sleep(0.5)
             print("Exercise done!")
             write("Exercise done!")
 
+
         # SANASANELU
 
         def sanasanelu():
+            
             sanat = driver.find_elements_by_class_name("harjoituskohta.kirjoitettava.playsoundonfocus")
             
             for i in range(len(sanat)):
                 
-                if piste_threshold_reached == True:
-                    break
-                else:
-                    if human_state == 1:
-                        human_behaviour()
-                        if piste_threshold_reached == True:
-                            break
+                if human_state == 1 and piste_threshold_reached == True: break
+                elif human_state == 1 and piste_threshold_reached == False:
+                    human_behaviour()
+                    if piste_threshold_reached == True: break
 
-                    sanelu_oikea_vastaus = (sanat[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"}', 1)[0]
-                    print(sanelu_oikea_vastaus)
-                    write(sanelu_oikea_vastaus)
-                    (sanat[i]).send_keys(sanelu_oikea_vastaus)
-                    (sanat[i]).send_keys(Keys.ENTER)
+                sanelu_oikea_vastaus = (sanat[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"}', 1)[0]
+                print(sanelu_oikea_vastaus)
+                write(sanelu_oikea_vastaus)
+                (sanat[i]).send_keys(sanelu_oikea_vastaus)
+                (sanat[i]).send_keys(Keys.ENTER)
                     
             
             time.sleep(10)
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if str(url_type_var.get()) == "Kurssitehtävät":
-                if custom_sanasto != "":
-                    driver.execute_script("window.history.go(-1)")
-                else:
-                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                    else:
-                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-            
-            else:
-                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                else:
-                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-            
+            end_of_exercise()
 
             time.sleep(0.5)
             print("Exercise done!")
@@ -265,41 +241,24 @@ def main_window():
             lauseet = driver.find_elements_by_class_name("harjoituskohta.kirjoitettava.painettava")
             
             for i in range(len(lauseet)):
-                
-                if piste_threshold_reached == True:
-                    break
-                else:
-                    if human_state == 1:
-                        human_behaviour()
-                        if piste_threshold_reached == True:
-                            break
 
-                    aukkolause_oikea_vastaus = (lauseet[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"}', 1)[0]
-                    print(aukkolause_oikea_vastaus)
-                    write(aukkolause_oikea_vastaus)
-                    (lauseet[i]).send_keys(aukkolause_oikea_vastaus)
-                    (lauseet[i]).send_keys(Keys.ENTER)
+                if human_state == 1 and piste_threshold_reached == True: break
+                elif human_state == 1 and piste_threshold_reached == False:
+                    human_behaviour()
+                    if piste_threshold_reached == True: break
+
+                aukkolause_oikea_vastaus = (lauseet[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"}', 1)[0]
+                print(aukkolause_oikea_vastaus)
+                write(aukkolause_oikea_vastaus)
+                (lauseet[i]).send_keys(aukkolause_oikea_vastaus)
+                (lauseet[i]).send_keys(Keys.ENTER)
 
             
             time.sleep(10)
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if str(url_type_var.get()) == "Kurssitehtävät":
-                if custom_sanasto != "":
-                    driver.execute_script("window.history.go(-1)")
-                else:
-                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                    else:
-                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-            
-            else:
-                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                else:
-                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-            
+            end_of_exercise()
 
             time.sleep(0.5)
             print("Exercise done!")
@@ -313,41 +272,24 @@ def main_window():
             
             for i in range(len(aukot)):
                 
-                if piste_threshold_reached == True:
-                    break
-                else:
-                    if human_state == 1:
-                        human_behaviour()
-                        if piste_threshold_reached == True:
-                            break
+                if human_state == 1 and piste_threshold_reached == True: break
+                elif human_state == 1 and piste_threshold_reached == False:
+                    human_behaviour()
+                    if piste_threshold_reached == True: break
                 
-                    aukkosana_oikea_vastaus = (aukot[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"}]}', 1)[0]
-                    print(aukkosana_oikea_vastaus)
-                    write(aukkosana_oikea_vastaus)
-                    (aukot[i]).send_keys(aukkosana_oikea_vastaus)
-                    (aukot[i]).send_keys(Keys.ENTER)
+                aukkosana_oikea_vastaus = (aukot[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"}]}', 1)[0]
+                print(aukkosana_oikea_vastaus)
+                write(aukkosana_oikea_vastaus)
+                (aukot[i]).send_keys(aukkosana_oikea_vastaus)
+                (aukot[i]).send_keys(Keys.ENTER)
 
             
             time.sleep(10)
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if str(url_type_var.get()) == "Kurssitehtävät":
-                if custom_sanasto != "":
-                    driver.execute_script("window.history.go(-1)")
-                else:
-                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                    else:
-                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            end_of_exercise()
             
-            else:
-                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                else:
-                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-            
-
             time.sleep(0.5)
             print("Exercise done!")
             write("Exercise done!")
@@ -361,38 +303,21 @@ def main_window():
             kuvat = driver.find_elements_by_xpath("//*[@data-ratkaisupainallus='1']")
             for i in range(len(kuvat)):
                 
-                if piste_threshold_reached == True:
-                    break
-                else:
-                    if human_state == 1:                    
-                        human_behaviour()
-                        if piste_threshold_reached == True:
-                            break
+                if human_state == 1 and piste_threshold_reached == True: break
+                elif human_state == 1 and piste_threshold_reached == False:
+                    human_behaviour()
+                    if piste_threshold_reached == True: break
                 
-                    (kuvat[i]).click()
-                    time.sleep(5)
+                (kuvat[i]).click()
+                time.sleep(5)
 
 
             time.sleep(10)
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if str(url_type_var.get()) == "Kurssitehtävät":
-                if custom_sanasto != "":
-                    driver.execute_script("window.history.go(-1)")
-                else:
-                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                    else:
-                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            end_of_exercise()
             
-            else:
-                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                else:
-                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-            
-
             time.sleep(0.5)
             print("Exercise done!")
 
@@ -415,16 +340,13 @@ def main_window():
             # VAAKA
             for i in range(len(ristit)):
                 
-                if piste_threshold_reached == True:
-                    break
-                else:
-                    if human_state == 1:                    
-                        human_behaviour()
-                        if piste_threshold_reached == True:
-                            break 
+                if human_state == 1 and piste_threshold_reached == True: break
+                elif human_state == 1 and piste_threshold_reached == False:
+                    human_behaviour()
+                    if piste_threshold_reached == True: break
                 
-                    ristikko_oikea_vastaus = (ristit[i]).get_attribute("data-oikeamerkki")
-                    (ristit[i]).send_keys(ristikko_oikea_vastaus)
+                ristikko_oikea_vastaus = (ristit[i]).get_attribute("data-oikeamerkki")
+                (ristit[i]).send_keys(ristikko_oikea_vastaus)
                     
 
 
@@ -433,20 +355,7 @@ def main_window():
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if str(url_type_var.get()) == "Kurssitehtävät":
-                if custom_sanasto != "":
-                    driver.execute_script("window.history.go(-1)")
-                else:
-                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                    else:
-                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-            
-            else:
-                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                else:
-                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            end_of_exercise()
             
             time.sleep(0.5)
             print("Exercise done!")
@@ -457,7 +366,6 @@ def main_window():
 
         def piilosana(): 
 
-
             piilot = driver.find_elements_by_class_name('painettava.valittavaruutu.ratkaisematonpsruutu')
     
             pysty_alku = []
@@ -466,25 +374,20 @@ def main_window():
             vaaka_alku = []
             vaaka_loppu = []
 
-
-    
             for i in piilot:
                 p_a_value = int((i).get_attribute('data-pystysananalku'))
                 if p_a_value > -1:
                     vaaka_alku.append(i)
 
-
             for i in piilot:
                 p_l_value = int((i).get_attribute('data-pystysananloppu'))
                 if p_l_value > -1:
                     vaaka_loppu.append(i)
-
     
             for i in piilot:
                 v_a_value = int((i).get_attribute('data-vaakasananalku'))
                 if v_a_value > -1:
                     pysty_alku.append(i)
-
 
             for i in piilot:
                 v_l_value = int((i).get_attribute('data-vaakasananloppu'))
@@ -496,35 +399,39 @@ def main_window():
     
             while len(driver.find_elements_by_class_name('painettava.ratkaisematonpsruutu')) >= 2:
         
-                time.sleep(1)
+                time.sleep(0.3)
         
                 for i in pysty_alku:
+                    
+                    if human_state == 1 and piste_threshold_reached == True: break
+                    elif human_state == 1 and piste_threshold_reached == False:
+                        human_behaviour()
+                        if piste_threshold_reached == True: break
+                    
                     driver.execute_script("arguments[0].click();", i)
-                    time.sleep(0.2)
+                    time.sleep(0.1)
 
-                    for i in pysty_loppu:
-                        driver.execute_script("arguments[0].click();", i)
-                        time.sleep(0.2)
+                for i in pysty_loppu:
+                    
+                    driver.execute_script("arguments[0].click();", i)
+                    time.sleep(0.1)
         
-                time.sleep(0.5)
+                time.sleep(0.3)
 
                 for i in vaaka_alku:
 
-                    if piste_threshold_reached == True:
-                        break
-                    else:
-                        if human_state == 1:                    
-                            human_behaviour()
-                            if piste_threshold_reached == True:
-                                break                 
+                    if human_state == 1 and piste_threshold_reached == True: break
+                    elif human_state == 1 and piste_threshold_reached == False:
+                        human_behaviour()
+                        if piste_threshold_reached == True: break              
               
-                        driver.execute_script("arguments[0].click();", i)
-                        time.sleep(0.2)
+                    driver.execute_script("arguments[0].click();", i)
+                    time.sleep(0.2)
 
                             
-                        for i in vaaka_loppu:
-                            driver.execute_script("arguments[0].click();", i)
-                            time.sleep(0.2)
+                    for i in vaaka_loppu:
+                        driver.execute_script("arguments[0].click();", i)
+                        time.sleep(0.2)
         
             time.sleep(1)
 
@@ -533,21 +440,7 @@ def main_window():
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if str(url_type_var.get()) == "Kurssitehtävät":
-                if custom_sanasto != "":
-                    driver.execute_script("window.history.go(-1)")
-                else:
-                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                    else:
-                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-            
-            else:
-                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                else:
-                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-    
+            end_of_exercise()
 
             time.sleep(0.5)
             print("Exercise done!")
@@ -558,25 +451,25 @@ def main_window():
 
         def monivalinta():
             
+            time.sleep(0.5)
+            driver.execute_script("window.scrollTo(0, 580);")
+            time.sleep(0.5)
             monit = driver.find_elements_by_xpath("//*[@data-oikeaarvo]")
 
             for i in range(len(monit)):
                 
-                if piste_threshold_reached == True:
-                    break
-                else:
-                    if human_state == 1:                    
-                        human_behaviour()
-                        if piste_threshold_reached == True:
-                            break                
+                if human_state == 1 and piste_threshold_reached == True: break
+                elif human_state == 1 and piste_threshold_reached == False:
+                    human_behaviour()
+                    if piste_threshold_reached == True: break                  
                 
-                    moni_oikea_vastaus = (monit[i]).get_attribute('data-lopputeksti')
-                    time.sleep(0.1)
-                    (monit[i]).click()
-                    time.sleep(0.1)
-                    driver.find_element_by_xpath('//div[text()="%s"]' % moni_oikea_vastaus).click()
-                    print(moni_oikea_vastaus)
-                    write(moni_oikea_vastaus)
+                moni_oikea_vastaus = (monit[i]).get_attribute('data-lopputeksti')
+                time.sleep(0.1)
+                (monit[i]).click()
+                time.sleep(0.1)
+                driver.find_element_by_xpath('//div[text()="%s"]' % moni_oikea_vastaus).click()
+                print(moni_oikea_vastaus)
+                write(moni_oikea_vastaus)
 
             
 
@@ -584,22 +477,8 @@ def main_window():
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if str(url_type_var.get()) == "Kurssitehtävät":
-                if custom_sanasto != "":
-                    driver.execute_script("window.history.go(-1)")
-                else:
-                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                    else:
-                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            end_of_exercise()
             
-            else:
-                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                else:
-                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-            
-
             time.sleep(0.5)
             print("Exercise done!")
             write("Exercise done!")
@@ -617,23 +496,20 @@ def main_window():
 
             for i in range(len(yhdit)):
                 
-                if piste_threshold_reached == True:
-                    break
-                else:
-                    if human_state == 1:                    
-                        human_behaviour()
-                        if piste_threshold_reached == True:
-                            break                 
-                
-                    yhdistely_oikea_vastaus = (yhdit[i]).get_attribute('data-oikeaarvo')
-                    (yhdit[i]).click()
-                    time.sleep(0.2)
-                    yhdisteet = driver.find_elements_by_class_name('sekoitettava.harjoituskohta.toggleoncorrect.yhdistettava.yhdistettava_lahde.tekstiyhdistely_lahde')
-                    for i in yhdisteet:
-                        if str(i.text) == str(yhdistely_oikea_vastaus):
-                            print(yhdistely_oikea_vastaus)
-                            write(yhdistely_oikea_vastaus)
-                            i.click()
+                if human_state == 1 and piste_threshold_reached == True: break
+                elif human_state == 1 and piste_threshold_reached == False:
+                    human_behaviour()
+                    if piste_threshold_reached == True: break    
+                    
+                yhdistely_oikea_vastaus = (yhdit[i]).get_attribute('data-oikeaarvo')
+                (yhdit[i]).click()
+                time.sleep(0.2)
+                yhdisteet = driver.find_elements_by_class_name('sekoitettava.harjoituskohta.toggleoncorrect.yhdistettava.yhdistettava_lahde.tekstiyhdistely_lahde')
+                for i in yhdisteet:
+                    if str(i.text) == str(yhdistely_oikea_vastaus):
+                        print(yhdistely_oikea_vastaus)
+                        write(yhdistely_oikea_vastaus)
+                        i.click()
                     
                     time.sleep(0.2)
 
@@ -642,22 +518,8 @@ def main_window():
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
 
-            if str(url_type_var.get()) == "Kurssitehtävät":
-                if custom_sanasto != "":
-                    driver.execute_script("window.history.go(-1)")
-                else:
-                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                    else:
-                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+            end_of_exercise()
             
-            else:
-                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                else:
-                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-            
-
             time.sleep(0.5)
             print("Exercise done!")
             write("Exercise done!")
@@ -671,40 +533,23 @@ def main_window():
             
             for i in range(len(aukko)):
                 
-                if piste_threshold_reached == True:
-                    break
-                else:
-                    if human_state == 1:
-                        human_behaviour()
-                        if piste_threshold_reached == True:
-                            break
+                if human_state == 1 and piste_threshold_reached == True: break
+                elif human_state == 1 and piste_threshold_reached == False:
+                    human_behaviour()
+                    if piste_threshold_reached == True: break  
 
-                    aukko_oikea_vastaus = (aukko[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"', 1)[0].strip("/")
-                    print(aukko_oikea_vastaus)
-                    write(aukko_oikea_vastaus)
-                    (aukko[i]).send_keys(aukko_oikea_vastaus)
-                    (aukko[i]).send_keys(Keys.ENTER)
+                aukko_oikea_vastaus = (aukko[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"', 1)[0].strip("/")
+                print(aukko_oikea_vastaus)
+                write(aukko_oikea_vastaus)
+                (aukko[i]).send_keys(aukko_oikea_vastaus)
+                (aukko[i]).send_keys(Keys.ENTER)
 
             
             time.sleep(10)
             driver.execute_script("window.scrollTo(0, 1080);")
             time.sleep(0.5)
             
-            if str(url_type_var.get()) == "Kurssitehtävät":
-                if custom_sanasto != "":
-                    driver.execute_script("window.history.go(-1)")
-                else:
-                    if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                        (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                    else:
-                        driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-            
-            else:
-                if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
-                    (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
-                else:
-                    driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
-            
+            end_of_exercise()
             
             time.sleep(0.5)
             print("Exercise done!")
@@ -712,8 +557,21 @@ def main_window():
         # TEORIA
 
         def teoria():
-            
+
+            time.sleep(0.5)
+            driver.execute_script("window.history.go(-1)")
+            time.sleep(1)
+            print("Exercise done!")
+            write("Exercise done!")
+
+
+        # KUULLUN YMMÄRTÄMINEN
+
+        def kuullun_ymmärtäminen():
+
             print("lul")
+            time.sleep(0.5)
+            driver.execute_script("window.history.go(-1)")
 
 
         # SANASTO MENU
@@ -725,7 +583,8 @@ def main_window():
         , '//*[@id="divValikkoItemit"]/div[8]', '//*[@id="divValikkoItemit"]/div[9]'
         , '//*[@id="divValikkoItemit"]/div[10]', '//*[@id="divValikkoItemit"]/div[11]'
         , '//*[@id="divValikkoItemit"]/div[12]', '//*[@id="divValikkoItemit"]/div[13]'
-        , '//*[@id="divValikkoItemit"]/div[14]', '//*[@id="divValikkoItemit"]/div[15]')
+        , '//*[@id="divValikkoItemit"]/div[14]', '//*[@id="divValikkoItemit"]/div[15]'
+        ,'//*[@id="divValikkoItemit"]/div[16]', '//*[@id="divValikkoItemit"]/div[17]')
 
 
         # FINAL FINISHED FUNCTION
@@ -733,116 +592,41 @@ def main_window():
         def omg(): 
             for i in range(len(driver.find_elements_by_class_name("selausvalikko.vaihdaosoite"))):
                 driver.find_element_by_xpath(all_the_elems[i]).click()
-                time.sleep(0.5)
+                time.sleep(0.3)
                 sub_menu()
                 print("Section completed!")
                 write("Section completed")
-                time.sleep(1)
+                time.sleep(0.5)
                 driver.find_element_by_class_name("vaihdaosoite.ohjelmapaluupainike").click()
 
-        # SUB MENU FOR LOOP FUNCTION
+        # SUB MENU
 
         def sub_menu():
             for i in range(len(driver.find_elements_by_class_name("selausvalikko.vaihdaosoite"))):
                 driver.find_element_by_xpath(all_the_elems[i]).click()
-                time.sleep(0.5)
+                time.sleep(0.3)
                 sub_sub_menu()
-                time.sleep(0.5)
+                time.sleep(0.3)
                 driver.find_element_by_class_name("vaihdaosoite.ohjelmapaluupainike").click()
 
 
-        # SUB SUB MENU FOR LOOP FUNCTION
+        # SUB SUB MENU
 
         def sub_sub_menu():
             for i in range(len(driver.find_elements_by_class_name("selausvalikko.vaihdaosoite"))):
                 (driver.find_elements_by_class_name("selausvalikko.vaihdaosoite")[i]).click()
-                time.sleep(0.5)
-                
-                skip_check = skip_var.get()
-                if skip_check == 1:
-                    exercises_skip_enabled()
-                else: 
-                    exercises()
+                time.sleep(0.3)
 
+                exercises()
 
-                time.sleep(0.5)
+                time.sleep(0.3)
                 driver.find_element_by_class_name("vaihdaosoite.ohjelmapaluupainike").click()
 
-        
-        # EXERCISES FUNCTION
+
+
+        # EXERCISES
 
         def exercises():
-    
-            exercise_dict = {'tutustuminen': tutustuminen, 'aukkolause': aukkolause, 'aukkosana': aukkosana, 'kuvavalinta': kuvavalinta, 'monivalinta': monivalinta, 'ristikko': ristikko, 'piilosana': piilosana, 'yhdistely': yhdistely, 'aukko': aukko}
-            
-            for i in range(len(driver.find_elements_by_class_name('selausaihio_aladivi'))):
-                
-                exercise = (driver.find_elements_by_class_name('selausaihio_aladivi')[i]).get_attribute('innerText').partition('\n')[0][4:]
-                print(exercise)
-                write(exercise)
-                
-                exercise_score = (driver.find_elements_by_xpath('//*[@title="Paras aihiosta saamasi tulos"]')[i]).get_attribute('innerText')
-                
-                try:
-                    print(exercise_score)
-                    write(exercise_score)
-                
-                except NoSuchElementException:
-                    
-                    exercise_score = "0"
-                    print("0")
-                    write("0")
-
-                (driver.find_elements_by_class_name("selausaihio_aladivi")[i]).click()
-                time.sleep(0.5)
-                if exercise == "Tutustuminen":
-                    tutustuminen()
-                elif exercise == "Aukkolause":
-                    aukkolause()
-                elif exercise == "Aukkosana":
-                    aukkosana()
-                elif exercise == "Kuvavalinta":
-                    kuvavalinta()
-                elif exercise == "Monivalinta":
-                    monivalinta()
-                elif exercise == "Ristikko":
-                    ristikko()
-                elif exercise == "Piilosana":
-                    piilosana()        
-                elif exercise == "Sanasanelu":
-                    sanasanelu()
-                elif exercise == "Yhdistely":
-                    yhdistely()
-                elif exercise == "Aukko":
-                    aukko()                    
-                elif exercise == "Teoria":
-                    teoria()                 
-                else:
-                    print("Unknown exercise name!")
-                    write("Unknown exercise name!")
-                    time.sleep(0.5)
-                    aihiokoodi = driver.find_element_by_xpath('//*[@id="divYPnimilaatikko"]/span[1]')
-                    aihiokoodi.click()
-                    time.sleep(1)
-                    exercise_table = driver.find_element_by_xpath('//*[@id="divAihioPopup"]/div/table[2]')
-                    exercise_row = exercise_table.find_elements(By.TAG_NAME, "tr")[1]
-                    exercise = str(exercise_row.find_elements(By.TAG_NAME, "td")[1].text.strip("Harjoitus ( ").strip(")").lower())
-                    print("Exercise indentified: "+ str(exercise) +".")
-                    write("Exercise indentified: "+ str(exercise) +".")
-                    sulje_aihiokoodi = driver.find_element_by_id('divSuljeAihioKortti')
-                    time.sleep(0.5)
-                    sulje_aihiokoodi.click()
-                    time.sleep(0.5)
-
-                    exercise_dict[exercise]()
-
-
-
-        # EXERCISES FUNCTION WITH "SKIP COMPLETED" ENABLED
-
-        def exercises_skip_enabled():
-
-            exercise_dict = {'tutustuminen': tutustuminen, 'aukkolause': aukkolause, 'aukkosana': aukkosana, 'kuvavalinta': kuvavalinta, 'monivalinta': monivalinta, 'ristikko': ristikko, 'piilosana': piilosana, 'yhdistely': yhdistely, 'aukko': aukko}
 
             for i in range(len(driver.find_elements_by_class_name('selausaihio_aladivi'))):
                 
@@ -860,14 +644,13 @@ def main_window():
                     print(exercise_score)
                     write(exercise_score)
 
+                skip_check = skip_var.get()
                 skip_threshold = skip_scale_var.get()
 
-                if int(exercise_score) > skip_threshold:
-                    
+                if skip_check == 1 and int(exercise_score) > skip_threshold:
                     print(exercise + " " + "already completed")
                     write(exercise + " " + "already completed")
                 else:
-                    
                     (driver.find_elements_by_class_name('selausaihio_aladivi')[i]).click()
                     time.sleep(0.5)
                     if exercise == "Tutustuminen":
@@ -893,23 +676,7 @@ def main_window():
                     elif exercise == "Teoria":
                         teoria()   
                     else:
-                        print("Unknown exercise name!")
-                        write("Unknown exercise name!")
-                        time.sleep(0.5)
-                        aihiokoodi = driver.find_element_by_xpath('//*[@id="divYPnimilaatikko"]/span[1]')
-                        aihiokoodi.click()
-                        time.sleep(1)
-                        exercise_table = driver.find_element_by_xpath('//*[@id="divAihioPopup"]/div/table[2]')
-                        exercise_row = exercise_table.find_elements(By.TAG_NAME, "tr")[1]
-                        exercise = str(exercise_row.find_elements(By.TAG_NAME, "td")[1].text.strip("Harjoitus ( ").strip(")").lower())
-                        print("Exercise indentified: "+ str(exercise) +".")
-                        write("Exercise indentified: "+ str(exercise) +".")
-                        sulje_aihiokoodi = driver.find_element_by_id('divSuljeAihioKortti')
-                        time.sleep(0.5)
-                        sulje_aihiokoodi.click()
-                        time.sleep(0.5)
-
-                        exercise_dict[exercise]()
+                        kurssi_exercises()
 
         # FINAL FUNCTION FOR KURSSITEHTÄVÄT
 
@@ -940,7 +707,7 @@ def main_window():
                 siirry_kurssiin.click()
                 print("Section compledted!")
                 write("Section compledted!")
-                time.sleep(0.3)
+                time.sleep(0.5)
 
 
        # KURSSI MENU
@@ -980,7 +747,6 @@ def main_window():
                 print(kurssi_pisteet)
                 write(kurssi_pisteet)
                 
-
                 time.sleep(0.2)
                 kurssi_harjoitus = driver.find_element_by_xpath((exercise_list[i]))
                  
@@ -990,25 +756,26 @@ def main_window():
                 elif str(kurssi_pisteet) == '-':
                     kurssi_pisteet = "0"
                 
-
+                skip_check = skip_var.get()
                 skip_threshold = skip_scale_var.get()
                 
-                if int(kurssi_pisteet) > skip_threshold:
+                if skip_check == 1 and int(kurssi_pisteet) > skip_threshold:
                     print(kurssi_otsikko + " " + "already completed")
                     write(kurssi_otsikko + " " + "already completed")
-                
+
                 else:    
                     kurssi_harjoitus.click()
                     time.sleep(0.2)
                     kurssi_exercises()
                     
-
                 
         # KURSSI EXERCISES
 
         def kurssi_exercises():
             
-            exercise_dict = {'tutustuminen': tutustuminen, 'aukkolause': aukkolause, 'aukkosana': aukkosana, 'kuvavalinta': kuvavalinta, 'monivalinta': monivalinta, 'ristikko': ristikko, 'piilosana': piilosana, 'yhdistely': yhdistely, 'aukko': aukko}
+            exercise_dict = {'tutustuminen': tutustuminen, 'aukkolause': aukkolause, 'aukkosana': aukkosana, 'kuvavalinta': kuvavalinta,
+                             'monivalinta': monivalinta, 'ristikko': ristikko, 'piilosana': piilosana, 'yhdistely': yhdistely, 'aukko': aukko,
+                             'teoria': teoria, 'kuullunymmärtäminen': kuullun_ymmärtäminen}
 
             time.sleep(0.5)
             aihiokoodi = driver.find_element_by_xpath('//*[@id="divYPnimilaatikko"]/span[1]')
@@ -1016,7 +783,7 @@ def main_window():
             time.sleep(0.8)
             aihiokoodi_table = driver.find_element_by_xpath('//*[@id="divAihioPopup"]/div/table[2]')
             aihiokoodi_row = aihiokoodi_table.find_elements(By.TAG_NAME, "tr")[1]
-            exercise = str(aihiokoodi_row.find_elements(By.TAG_NAME, "td")[1].text.strip("Harjoitus ( ").strip(")").rstrip("(Teoria").lower())
+            exercise = str(aihiokoodi_row.find_elements(By.TAG_NAME, "td")[1].text.split("(", 1)[1].strip(")").strip().lower())
             print(exercise)
             write(exercise)
             sulje_aihiokoodi = driver.find_element_by_id('divSuljeAihioKortti')
@@ -1097,7 +864,9 @@ def main_window():
     # SKIP SCALE
     
     skip_scale_var = IntVar()
-    skip_scale = Scale(settings_root, bg=gray, resolution=5, variable=skip_scale_var, from_ = 0, to = 100, orient = "horizontal", width=20, sliderlength=40, length=450, label="Change the minimium score for skipping an exercise")  
+    skip_scale = Scale(settings_root, bg=gray, resolution=5, variable=skip_scale_var, from_ = 0, to = 100, orient = "horizontal", 
+    width=20, sliderlength=40, length=450, label="Change the minimium score for skipping an exercise")  
+    
     skip_scale.set(70)
     skip_scale.place(x=70, y=220)
     skip_scale.lower()
@@ -1120,7 +889,9 @@ def main_window():
     # HUMAN SCALE 
     
     human_scale_var = IntVar()
-    human_scale = Scale(settings_root, bg=gray, resolution=5, variable=human_scale_var, from_ = 0, to = 100, orient = "horizontal", width=20, sliderlength=40, length=450, label="Change the minimium score to finish an exercise")  
+    human_scale = Scale(settings_root, bg=gray, resolution=5, variable=human_scale_var, from_ = 0, to = 100, orient = "horizontal", 
+    width=20, sliderlength=40, length=450, label="Change the minimium score to finish an exercise")  
+    
     human_scale.set(90)
     human_scale.place(x=70, y=220)
     human_scale.lower()
@@ -1448,7 +1219,9 @@ def main_window():
 
     # INFO POPUP
 
-    lines = ['Please read the instructions in readme.nfo', ' ', ' ', ' ', ' ', ' ', ' ', 'Made by Arrow', ' ', '©2021 Eternal Bliss All rights reserved']
+    lines = ['Please read the instructions in readme.nfo', ' ', ' ', ' ', ' ', ' ', ' ', 
+    'Made by Arrow', ' ', '©2021 Eternal Bliss All rights reserved']
+    
     messagebox.showinfo(' A Dream of Life', "\n".join(lines))
 
 
