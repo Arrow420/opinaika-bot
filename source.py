@@ -79,7 +79,8 @@ def main_window():
                 global user_sanasto
                 user_sanasto = custom_sanasto
         else: 
-            write("Url field empty!\nUsing selected language sanasto")
+            if url_check_var.get() == 1:
+                write("Url field empty!\nUsing selected language sanasto")
             user_sanasto = lang_variable.get()
 
         if user_sanasto == str(custom_sanasto): 
@@ -186,7 +187,7 @@ def main_window():
 
         def tutustuminen():
             
-            driver.execute_script("window.scrollTo(0, 560);")
+            driver.execute_script("window.scrollTo(0, 150);")
             time.sleep(0.1)
             tutut = driver.find_elements_by_class_name("painettava.tutustumisrivioletus.perussanasto")
             for i in range(len(tutut)):
@@ -452,7 +453,7 @@ def main_window():
         def monivalinta():
             
             time.sleep(0.5)
-            driver.execute_script("window.scrollTo(0, 580);")
+            driver.execute_script("window.scrollTo(0, 150);")
             time.sleep(0.5)
             monit = driver.find_elements_by_xpath("//*[@data-oikeaarvo]")
 
@@ -489,7 +490,7 @@ def main_window():
         def yhdistely():
             
             time.sleep(0.2)            
-            driver.execute_script("window.scrollTo(0, 550);")
+            driver.execute_script("window.scrollTo(0, 150);")
             time.sleep(0.2)
 
             yhdit = driver.find_elements_by_class_name("yhdistettava.yhdistettava_kohde.tekstiyhdistely_kohde")
@@ -505,7 +506,7 @@ def main_window():
                 (yhdit[i]).click()
                 time.sleep(0.2)
                 yhdisteet = driver.find_elements_by_class_name('sekoitettava.harjoituskohta.toggleoncorrect.yhdistettava.yhdistettava_lahde.tekstiyhdistely_lahde')
-                for i in yhdisteet:
+                for i in range(len(yhdisteet)):
                     if str(i.text) == str(yhdistely_oikea_vastaus):
                         print(yhdistely_oikea_vastaus)
                         write(yhdistely_oikea_vastaus)
