@@ -132,17 +132,27 @@ def main_window():
             piste_threshold = human_scale.get()
             tehtyja_kohtia = driver.find_element_by_xpath('//*[@id="divKohtiaTehty"]').text
             
-            if len(tehtyja_kohtia) < 10: pisteet = 0
+            if len(tehtyja_kohtia) < 10: 
+                pisteet = 0
             else:
                 pisteet = tehtyja_kohtia.split("Pisteet: ", 1)[1].split(".", 1)[0]
                 print(pisteet + " points")
                 write(pisteet + " points")                
                     
                 if int(pisteet) >= int(piste_threshold): 
-                    time.sleep(0.2)
+                    time.sleep(0.5)
                     global piste_threshold_reached
                     piste_threshold_reached = True
                     return
+
+
+        # ABORT HUMAN
+        def abort():
+            driver.execute_script("window.scrollTo(0, 1080);")
+            time.sleep(0.5)
+            driver.find_element_by_xpath('//*[@id="divAihioHarjoittelu"]/center/div').click()
+            time.sleep(0.2)
+
 
 
         # END OF EXERCISE
@@ -154,7 +164,10 @@ def main_window():
                 if len(driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")) > 0:
                     (driver.find_elements_by_class_name("vaihdaosoite.loppupalautenavigointi")[0]).click()
                     
-                else: driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click() 
+                else: driver.find_element_by_class_name("selainpalaa.loppupalautenavigointi").click()
+            
+            global piste_threshold_reached
+            piste_threshold_reached = False 
                         
         # LOGIN #
 
@@ -187,8 +200,8 @@ def main_window():
 
         def tutustuminen():
             
-            driver.execute_script("window.scrollTo(0, 150);")
-            time.sleep(0.1)
+            driver.execute_script("window.scrollTo(0, 250);")
+            time.sleep(0.2)
             tutut = driver.find_elements_by_class_name("painettava.tutustumisrivioletus.perussanasto")
             for i in range(len(tutut)):
                 (tutut[i]).click()
@@ -212,10 +225,15 @@ def main_window():
             
             for i in range(len(sanat)):
                 
-                if human_state == 1 and piste_threshold_reached == True: break
+                if human_state == 1 and piste_threshold_reached == True: 
+                    abort()
+                    break
                 elif human_state == 1 and piste_threshold_reached == False:
-                    human_behaviour()
-                    if piste_threshold_reached == True: break
+                        human_behaviour()
+                        if piste_threshold_reached == True:
+                            abort()
+                            break
+                        
 
                 sanelu_oikea_vastaus = (sanat[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"}', 1)[0]
                 print(sanelu_oikea_vastaus)
@@ -243,10 +261,14 @@ def main_window():
             
             for i in range(len(lauseet)):
 
-                if human_state == 1 and piste_threshold_reached == True: break
+                if human_state == 1 and piste_threshold_reached == True: 
+                    abort()
+                    break
                 elif human_state == 1 and piste_threshold_reached == False:
                     human_behaviour()
-                    if piste_threshold_reached == True: break
+                    if piste_threshold_reached == True: 
+                        abort()
+                        break
 
                 aukkolause_oikea_vastaus = (lauseet[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"}', 1)[0]
                 print(aukkolause_oikea_vastaus)
@@ -263,6 +285,7 @@ def main_window():
 
             time.sleep(0.5)
             print("Exercise done!")
+            write("Exercise done!")
 
 
         # AUKKOSANA
@@ -273,10 +296,14 @@ def main_window():
             
             for i in range(len(aukot)):
                 
-                if human_state == 1 and piste_threshold_reached == True: break
+                if human_state == 1 and piste_threshold_reached == True: 
+                    abort()
+                    break
                 elif human_state == 1 and piste_threshold_reached == False:
                     human_behaviour()
-                    if piste_threshold_reached == True: break
+                    if piste_threshold_reached == True: 
+                        abort()
+                        break
                 
                 aukkosana_oikea_vastaus = (aukot[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"}]}', 1)[0]
                 print(aukkosana_oikea_vastaus)
@@ -304,10 +331,14 @@ def main_window():
             kuvat = driver.find_elements_by_xpath("//*[@data-ratkaisupainallus='1']")
             for i in range(len(kuvat)):
                 
-                if human_state == 1 and piste_threshold_reached == True: break
+                if human_state == 1 and piste_threshold_reached == True: 
+                    abort()
+                    break
                 elif human_state == 1 and piste_threshold_reached == False:
                     human_behaviour()
-                    if piste_threshold_reached == True: break
+                    if piste_threshold_reached == True: 
+                        abort()
+                        break
                 
                 (kuvat[i]).click()
                 time.sleep(5)
@@ -321,6 +352,7 @@ def main_window():
             
             time.sleep(0.5)
             print("Exercise done!")
+            write("Exercise done!")
 
 
         # RISTIKKO
@@ -341,10 +373,14 @@ def main_window():
             # VAAKA
             for i in range(len(ristit)):
                 
-                if human_state == 1 and piste_threshold_reached == True: break
+                if human_state == 1 and piste_threshold_reached == True: 
+                    abort()
+                    break
                 elif human_state == 1 and piste_threshold_reached == False:
                     human_behaviour()
-                    if piste_threshold_reached == True: break
+                    if piste_threshold_reached == True: 
+                        abort()
+                        break
                 
                 ristikko_oikea_vastaus = (ristit[i]).get_attribute("data-oikeamerkki")
                 (ristit[i]).send_keys(ristikko_oikea_vastaus)
@@ -404,10 +440,14 @@ def main_window():
         
                 for i in pysty_alku:
                     
-                    if human_state == 1 and piste_threshold_reached == True: break
+                    if human_state == 1 and piste_threshold_reached == True: 
+                        abort()
+                        break
                     elif human_state == 1 and piste_threshold_reached == False:
                         human_behaviour()
-                        if piste_threshold_reached == True: break
+                        if piste_threshold_reached == True: 
+                            abort()
+                            break
                     
                     driver.execute_script("arguments[0].click();", i)
                     time.sleep(0.1)
@@ -421,10 +461,14 @@ def main_window():
 
                 for i in vaaka_alku:
 
-                    if human_state == 1 and piste_threshold_reached == True: break
+                    if human_state == 1 and piste_threshold_reached == True: 
+                        abort()
+                        break
                     elif human_state == 1 and piste_threshold_reached == False:
                         human_behaviour()
-                        if piste_threshold_reached == True: break              
+                        if piste_threshold_reached == True: 
+                            abort()
+                            break          
               
                     driver.execute_script("arguments[0].click();", i)
                     time.sleep(0.2)
@@ -453,16 +497,20 @@ def main_window():
         def monivalinta():
             
             time.sleep(0.5)
-            driver.execute_script("window.scrollTo(0, 150);")
+            driver.execute_script("window.scrollTo(0, 220);")
             time.sleep(0.5)
             monit = driver.find_elements_by_xpath("//*[@data-oikeaarvo]")
 
             for i in range(len(monit)):
                 
-                if human_state == 1 and piste_threshold_reached == True: break
+                if human_state == 1 and piste_threshold_reached == True: 
+                    abort()
+                    break
                 elif human_state == 1 and piste_threshold_reached == False:
                     human_behaviour()
-                    if piste_threshold_reached == True: break                  
+                    if piste_threshold_reached == True: 
+                        abort()
+                        break                
                 
                 moni_oikea_vastaus = (monit[i]).get_attribute('data-lopputeksti')
                 time.sleep(0.1)
@@ -490,27 +538,33 @@ def main_window():
         def yhdistely():
             
             time.sleep(0.2)            
-            driver.execute_script("window.scrollTo(0, 150);")
+            driver.execute_script("window.scrollTo(0, 490);")
             time.sleep(0.2)
 
             yhdit = driver.find_elements_by_class_name("yhdistettava.yhdistettava_kohde.tekstiyhdistely_kohde")
 
             for i in range(len(yhdit)):
                 
-                if human_state == 1 and piste_threshold_reached == True: break
+                if human_state == 1 and piste_threshold_reached == True: 
+                    abort()
+                    break
                 elif human_state == 1 and piste_threshold_reached == False:
                     human_behaviour()
-                    if piste_threshold_reached == True: break    
+                    if piste_threshold_reached == True: 
+                        abort()
+                        break  
                     
                 yhdistely_oikea_vastaus = (yhdit[i]).get_attribute('data-oikeaarvo')
                 (yhdit[i]).click()
                 time.sleep(0.2)
                 yhdisteet = driver.find_elements_by_class_name('sekoitettava.harjoituskohta.toggleoncorrect.yhdistettava.yhdistettava_lahde.tekstiyhdistely_lahde')
                 for i in range(len(yhdisteet)):
-                    if str(i.text) == str(yhdistely_oikea_vastaus):
+                    if str((yhdisteet[i]).text) == str(yhdistely_oikea_vastaus):
                         print(yhdistely_oikea_vastaus)
                         write(yhdistely_oikea_vastaus)
-                        i.click()
+                        time.sleep(0.2)
+                        (yhdisteet[i]).click()
+
                     
                     time.sleep(0.2)
 
@@ -534,10 +588,14 @@ def main_window():
             
             for i in range(len(aukko)):
                 
-                if human_state == 1 and piste_threshold_reached == True: break
+                if human_state == 1 and piste_threshold_reached == True: 
+                    abort()
+                    break
                 elif human_state == 1 and piste_threshold_reached == False:
                     human_behaviour()
-                    if piste_threshold_reached == True: break  
+                    if piste_threshold_reached == True: 
+                        abort()
+                        break 
 
                 aukko_oikea_vastaus = (aukko[i]).get_attribute("data-oikeatvastaukset").split('"text":"', 1)[1].split('"', 1)[0].strip("/")
                 print(aukko_oikea_vastaus)
@@ -554,6 +612,7 @@ def main_window():
             
             time.sleep(0.5)
             print("Exercise done!")
+            write("Exercise done!")
 
         # TEORIA
 
@@ -571,6 +630,7 @@ def main_window():
         def kuullun_ymmärtäminen():
 
             print("lul")
+            print("still under development :trol:")
             time.sleep(0.5)
             driver.execute_script("window.history.go(-1)")
 
