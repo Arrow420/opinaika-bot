@@ -883,7 +883,7 @@ def main_window():
 
     # BACKGROUND IMAGE
     
-    background = PhotoImage(file="img\\bg_4.png")
+    background = PhotoImage(file="img\\bg.png")
     bg_label = Label(root, image=background)
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
     bg_label.image = background
@@ -912,7 +912,7 @@ def main_window():
 
     # SETTINGS BACKGROUND IMAGE
     
-    settings_background = PhotoImage(file="img\\settings_bg_4.png")
+    settings_background = PhotoImage(file="img\\settings_bg.png")
     settings_bg_label = Label(settings_root, image=settings_background)
     settings_bg_label.place(x=0, y=0, relwidth=1, relheight=1)
     settings_bg_label.image = settings_background    
@@ -1281,9 +1281,9 @@ def main_window():
     # INFO POPUP
 
     lines = ['Please read the instructions in readme.nfo', ' ', ' ', ' ', ' ', ' ', ' ', 
-    'Made by Arrow', ' ', '©2021 Eternal Bliss All rights reserved']
+    'Made by Arrow', ' ', '©2021 A Dream of Life All rights reserved']
     
-    messagebox.showinfo(' A Dream of Life', "\n".join(lines))
+    messagebox.showinfo(' Bliss Fields', "\n".join(lines))
 
 
 # PROGRESS BAR FUNCTION
