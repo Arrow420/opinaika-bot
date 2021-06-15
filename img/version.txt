@@ -33,7 +33,7 @@ VSVersionInfo(
         StringStruct(u'ProductName', u'Opinaika bot'),
         StringStruct(u'ProductVersion', u'1.9.9.9'), #<- should be same as filevers
         StringStruct(u'OriginalFilename', u'opinaika-bot.exe'),
-        StringStruct(u'FileDescription', u'Selenium bot for opinaika'),
+        StringStruct(u'FileDescription', u'Opinaika-bot 1.9.9.9'),
         StringStruct(u'LegalCopyright', u'©2021  Dream of Life'),
         StringStruct(u'LegalTrademarks', u'©2021  All rights reserved'),])
       ]),
